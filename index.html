@@ -561,13 +561,13 @@ var STEPS=['s0','sB','s_tipo','s1p','s2p','s_sport','s_sede','s1','s1mag','s2','
 // CHIAMATA AL BACKEND — fetch con CORS
 // ============================================================
 function chiamaBackend(azione, dati, callback) {
-  fetch(BACKEND_URL, {
-    method: 'POST',
-    body: JSON.stringify({ azione: azione, dati: dati }),
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){ callback(null, data); })
-  .catch(function(err){ callback(err, null); });
+  // Usiamo GET per evitare problemi CORS con Apps Script
+  var payload = encodeURIComponent(JSON.stringify(dati || {}));
+  var url = BACKEND_URL + '?azione=' + encodeURIComponent(azione) + '&payload=' + payload;
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data){ callback(null, data); })
+    .catch(function(err){ callback(err, null); });
 }
 
 // ============================================================
