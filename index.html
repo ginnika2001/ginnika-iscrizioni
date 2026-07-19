@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-iscrizione Ginnika 2001</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Arial,sans-serif;background:#fffff2;color:#222;min-height:100vh;padding:0 0 40px}
+.header{background:#1a3a6b;color:#fff;text-align:center;padding:24px 20px 16px}
+.header h1{font-size:1.3rem;font-weight:700}
+.header p{font-size:.82rem;opacity:.75;margin-top:4px}
+.accent-bar{height:4px;background:#00a8b5}
+.progress-bar{background:#e8e0d4;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:.78rem;color:#888;flex-wrap:wrap}
+.progress-step{display:flex;align-items:center;gap:6px}
+.progress-dot{width:22px;height:22px;border-radius:50%;background:#ccc;color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.progress-dot.active{background:#1a3a6b}
+.progress-dot.done{background:#00a8b5}
+.progress-sep{color:#ccc;font-size:1rem}
+.page{display:flex;justify-content:center;padding:20px 16px 0}
+.card{background:#fff;border-radius:10px;padding:26px 28px;box-shadow:0 2px 14px rgba(0,0,0,.09);width:100%;max-width:580px;margin-bottom:16px}
+.step-title{font-size:1rem;font-weight:700;color:#1a3a6b;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #f0f0f0}
+.step-sub{font-size:.82rem;color:#888;font-weight:400;margin-left:6px}
+.choice-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn-choice{border:2px solid #1a3a6b;background:#fff;color:#1a3a6b;padding:16px 8px;border-radius:8px;font-size:.82rem;font-weight:600;text-align:center;line-height:1.4;cursor:pointer}
+.btn-choice:hover{background:#1a3a6b;color:#fff}
+.icon{font-size:1.5rem;display:block;margin-bottom:6px}
+.field-group{margin-bottom:13px}
+.field-group label{display:block;font-size:.76rem;font-weight:700;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+input[type=text],input[type=email],input[type=tel],input[type=date],select{width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:6px;font-size:.92rem;font-family:inherit;background:#fff;color:#222;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{outline:none;border-color:#00a8b5}
+input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px}
+.grid-4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
+.giorni-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.giorno-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f5f5f5;border-radius:6px}
+.giorno-item input[type=checkbox]{width:16px;height:16px;accent-color:#1a3a6b;flex-shrink:0}
+.giorno-item label{font-size:.86rem;cursor:pointer;font-weight:400;text-transform:none;letter-spacing:0;color:#333;margin:0}
+.cf-row{display:flex;gap:10px;align-items:flex-end}
+.cf-row input{flex:1;text-transform:uppercase}
+.btn-cerca{background:#1a3a6b;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:.88rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-cerca:disabled{background:#aaa}
+.alert{border-radius:7px;padding:11px 14px;font-size:.85rem;margin:11px 0;line-height:1.5}
+.alert-ok{background:#e8f5e9;border-left:4px solid #43a047;color:#2e7d32}
+.alert-warn{background:#fff8e1;border-left:4px solid #ffa000;color:#6d4c00}
+.alert-danger{background:#fce4ec;border-left:4px solid #e53935;color:#b71c1c}
+.alert-info{background:#e3f2fd;border-left:4px solid #1976d2;color:#0d47a1}
+.atleta-card{background:#f0f9ff;border:1.5px solid #00a8b5;border-radius:8px;padding:14px;margin:11px 0}
+.atleta-card .nome{font-size:1rem;font-weight:700;color:#1a3a6b}
+.atleta-card .det{font-size:.84rem;color:#555;margin-top:3px}
+.section-divider{font-size:.72rem;font-weight:700;color:#00a8b5;text-transform:uppercase;letter-spacing:.8px;margin:18px 0 10px;padding-bottom:4px;border-bottom:1px solid #e0f5f5}
+.checkbox-group{display:flex;align-items:flex-start;gap:10px;margin-bottom:11px;padding:11px;background:#f9f9f9;border-radius:6px}
+.checkbox-group input[type=checkbox]{width:18px;min-width:18px;height:18px;margin-top:2px;accent-color:#1a3a6b;cursor:pointer}
+.checkbox-group label{font-size:.83rem;line-height:1.5;color:#444;cursor:pointer;font-weight:400;text-transform:none;letter-spacing:0}
+.radio-group{display:flex;gap:12px;margin-top:6px}
+.radio-item{display:flex;align-items:center;gap:6px;padding:9px 16px;border:1.5px solid #ddd;border-radius:6px;cursor:pointer;flex:1}
+.radio-item input[type=radio]{width:16px;height:16px;accent-color:#1a3a6b}
+.radio-item label{font-size:.9rem;cursor:pointer;font-weight:600;color:#333;margin:0;text-transform:none;letter-spacing:0}
+.radio-item.sel{border-color:#00a8b5;background:#f0fafa}
+.nav-buttons{display:flex;gap:10px;margin-top:16px}
+.btn-back{flex:0 0 auto;background:#fff;color:#1a3a6b;border:2px solid #1a3a6b;padding:12px 20px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+.btn-back:hover{background:#f0f4ff}
+.btn-next{flex:1;background:#00a8b5;color:#fff;border:none;padding:12px;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer}
+.btn-next:hover{background:#0090a0}
+.btn-next:disabled{background:#aaa;cursor:not-allowed}
+.btn-full{width:100%;background:#00a8b5;color:#fff;border:none;padding:13px;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer;margin-top:8px}
+.btn-full:hover{background:#0090a0}
+.btn-full:disabled{background:#aaa;cursor:not-allowed}
+.btn-outline{width:100%;background:#fff;color:#1a3a6b;border:2px solid #1a3a6b;padding:11px;border-radius:8px;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:8px}
+.btn-outline:hover{background:#f0f4ff}
+.spinner{display:inline-block;width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.conferma-header{text-align:center;padding:6px 0 14px}
+.conferma-header .check{font-size:2.8rem;margin-bottom:8px}
+.conferma-header h2{color:#1a3a6b;font-size:1.15rem;margin-bottom:8px}
+.conferma-header p{color:#555;font-size:.88rem;line-height:1.6}
+.quote-box{background:#f8f9fa;border-radius:8px;padding:15px}
+.quote-box h3{font-size:.85rem;font-weight:700;color:#1a3a6b;margin-bottom:10px}
+.quote-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;font-size:.87rem}
+.quote-row:last-child{border-bottom:none;font-weight:700;color:#1a3a6b}
+.bonifico-box{background:#1a3a6b;color:#fff;border-radius:8px;padding:16px;margin:12px 0}
+.bonifico-box h3{font-size:.78rem;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.b-row{margin-bottom:12px}
+.b-label{font-size:.72rem;opacity:.65;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.b-value-row{display:flex;align-items:center;gap:8px}
+.b-value{font-weight:600;font-size:.9rem;flex:1;word-break:break-all}
+.b-value.iban{font-family:monospace;font-size:.93rem;letter-spacing:.5px;background:rgba(255,255,255,.1);padding:5px 9px;border-radius:4px}
+.b-value.causale{background:rgba(0,168,181,.25);border:1px solid rgba(0,168,181,.5);border-radius:5px;padding:8px 10px;line-height:1.4}
+.btn-copia{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 10px;border-radius:4px;font-size:.71rem;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.btn-copia:hover{background:rgba(255,255,255,.28)}
+.btn-copia.ok{background:#43a047;border-color:#43a047}
+.upload-area{border:2px dashed #ccc;border-radius:8px;padding:20px 16px;text-align:center;cursor:pointer}
+.upload-area:hover{border-color:#00a8b5;background:#f0fafc}
+.upload-area p{color:#888;font-size:.84rem;margin-bottom:10px}
+.loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.loading-overlay p{margin-top:16px;color:#1a3a6b;font-weight:600;font-size:.95rem}
+.hidden{display:none!important}
+@media(max-width:520px){
+  .card{padding:18px 14px}
+  .choice-grid-2,.choice-grid-3,.grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr 1fr}
+  .grid-4{grid-template-columns:1fr 1fr}
+  .giorni-grid{grid-template-columns:1fr}
+  .radio-group{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading iniziale -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner" style="width:32px;height:32px;border-width:4px;border-top-color:#1a3a6b;border-color:rgba(26,58,107,.2);border-top-color:#1a3a6b"></div>
+  <p>Caricamento in corso...</p>
+</div>
+
+<div class="header">
+  <h1>Ginnika 2001</h1>
+  <p id="headerSub"></p>
+</div>
+<div class="accent-bar"></div>
+
+<div class="progress-bar hidden" id="progressBar">
+  <div class="progress-step"><div class="progress-dot" id="pd1">1</div><span id="pd1l">Atleta</span></div>
+  <div class="progress-sep">›</div>
+  <div class="progress-step"><div class="progress-dot" id="pd2">2</div><span id="pd2l">Genitore</span></div>
+  <div class="progress-sep">›</div>
+  <div class="progress-step"><div class="progress-dot" id="pd3">3</div><span id="pd3l">Corso</span></div>
+  <div class="progress-sep">›</div>
+  <div class="progress-step"><div class="progress-dot" id="pd4">4</div><span id="pd4l">Consensi</span></div>
+</div>
+
+<!-- S0 — scelta flusso -->
+<div class="page" id="s0">
+<div class="card">
+  <div class="step-title">Benvenuta! Come vuoi procedere?</div>
+  <div class="alert alert-info" style="margin-bottom:16px">La pre-iscrizione genera un modulo precompilato via email. L'iscrizione è ufficiale solo dopo aver consegnato il modulo firmato e la copia di pagamento in palestra.</div>
+  <div class="choice-grid-3">
+    <button class="btn-choice" id="btnP"><span class="icon">⭐</span>Lezione di prova<br><small style="font-weight:400">2 lezioni gratuite</small></button>
+    <button class="btn-choice" id="btnA"><span class="icon">🆕</span>Nuova iscrizione<br><small style="font-weight:400">Prima volta</small></button>
+    <button class="btn-choice" id="btnB"><span class="icon">🔄</span>Rinnovo<br><small style="font-weight:400">Già iscritta</small></button>
+  </div>
+</div>
+</div>
+
+<!-- SB — lookup CF -->
+<div class="page hidden" id="sB">
+<div class="card">
+  <div class="step-title">Cerca l'atleta</div>
+  <div class="field-group">
+    <label>Codice fiscale dell'atleta *</label>
+    <div class="cf-row">
+      <input type="text" id="cfLookup" maxlength="16" placeholder="RSSMRA10A01F205X">
+      <button class="btn-cerca" id="btnCerca">Cerca</button>
+    </div>
+  </div>
+  <div id="lookupResult"></div>
+  <div class="nav-buttons"><button class="btn-back" id="btnBackB">← Indietro</button></div>
+</div>
+</div>
+
+<!-- S_TIPO — scelta tipo attività -->
+<div class="page hidden" id="s_tipo">
+<div class="card">
+  <div class="step-title">Tipo di attività</div>
+  <div class="choice-grid-2">
+    <button class="btn-choice" id="btnTipoRitmica"><span class="icon">🤸</span>Ginnastica ritmica<br><small style="font-weight:400">Baby, Base, Intermedio, Agonistica</small></button>
+    <button class="btn-choice" id="btnTipoFitness"><span class="icon">🧘</span>Fitness adulti<br><small style="font-weight:400">Fitness, Pilates, Risveglio Motorio</small></button>
+  </div>
+  <div class="nav-buttons"><button class="btn-back" id="btnBackTipo">← Indietro</button></div>
+</div>
+</div>
+
+<!-- S1P — atleta (flusso P) -->
+<div class="page hidden" id="s1p">
+<div class="card">
+  <div class="step-title">Dati dell'atleta</div>
+  <div class="grid-2">
+    <div class="field-group"><label>Nome *</label><input type="text" id="pNomeAtleta" placeholder="Maria"></div>
+    <div class="field-group"><label>Cognome *</label><input type="text" id="pCognomeAtleta" placeholder="Rossi"></div>
+  </div>
+  <div class="grid-2">
+    <div class="field-group"><label>Codice fiscale *</label><input type="text" id="pCfAtleta" maxlength="16" placeholder="RSSMRA10A01F205X" style="text-transform:uppercase"></div>
+    <div class="field-group"><label>Data di nascita *</label><input type="date" id="pDataNascitaAtleta"></div>
+  </div>
+  <div class="grid-3">
+    <div class="field-group"><label>Città di nascita *</label><input type="text" id="pCittaNascitaAtleta" placeholder="Milano"></div>
+    <div class="field-group"><label>Prov.*</label><input type="text" id="pProvNascitaAtleta" maxlength="3" placeholder="MI"></div>
+    <div class="field-group"><label>Nazione *</label><input type="text" id="pNazioneNascitaAtleta" placeholder="Italia"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack1p">← Indietro</button>
+    <button class="btn-next" id="btnNext1p">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S2P — genitore (flusso P) -->
+<div class="page hidden" id="s2p">
+<div class="card">
+  <div class="step-title">Dati del genitore / tutore</div>
+  <div class="alert alert-warn" style="margin-bottom:16px;font-size:.83rem;line-height:1.6"><strong>⚠️ Attenzione — dati fiscali</strong><br>Questi dati verranno associati alla ricevuta di pagamento e potranno essere utilizzati per la <strong>detrazione fiscale 730</strong>. Inseriscili con cura.</div>
+  <div class="grid-2">
+    <div class="field-group"><label>Nome *</label><input type="text" id="pNomeGenitore" placeholder="Mario"></div>
+    <div class="field-group"><label>Cognome *</label><input type="text" id="pCognomeGenitore" placeholder="Rossi"></div>
+  </div>
+  <div class="grid-2">
+    <div class="field-group"><label>Codice fiscale *</label><input type="text" id="pCfGenitore" maxlength="16" placeholder="RSSMRO10A01F205X" style="text-transform:uppercase"></div>
+    <div class="field-group"><label>Data di nascita *</label><input type="date" id="pDataNascitaGenitore"></div>
+  </div>
+  <div class="grid-3">
+    <div class="field-group"><label>Città di nascita *</label><input type="text" id="pCittaNascitaGenitore" placeholder="Milano"></div>
+    <div class="field-group"><label>Prov.*</label><input type="text" id="pProvNascitaGenitore" maxlength="3" placeholder="MI"></div>
+    <div class="field-group"><label>Nazione *</label><input type="text" id="pNazioneNascitaGenitore" placeholder="Italia"></div>
+  </div>
+  <div class="grid-2">
+    <div class="field-group"><label>Email *</label><input type="email" id="pEmail" placeholder="mario.rossi@email.it"></div>
+    <div class="field-group"><label>Cellulare *</label><input type="tel" id="pTelefono" placeholder="+39 333 1234567"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack2p">← Indietro</button>
+    <button class="btn-next" id="btnNext2p">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S_SPORT — esperienza sportiva (solo flusso P ritmica) -->
+<div class="page hidden" id="s_sport">
+<div class="card">
+  <div class="step-title">Esperienza sportiva pregressa</div>
+  <div class="field-group" style="margin-bottom:20px">
+    <label style="font-size:.9rem;font-weight:600;color:#333;text-transform:none;letter-spacing:0">Ha già fatto attività sportiva?</label>
+    <div class="radio-group" style="margin-top:10px">
+      <div class="radio-item" id="riSportSi"><input type="radio" name="haSport" id="haSportSi" value="si"><label for="haSportSi">Sì</label></div>
+      <div class="radio-item" id="riSportNo"><input type="radio" name="haSport" id="haSportNo" value="no"><label for="haSportNo">No</label></div>
+    </div>
+  </div>
+  <div id="bloccoTipoSport" class="hidden" style="margin-bottom:20px">
+    <label style="font-size:.9rem;font-weight:600;color:#333;text-transform:none;letter-spacing:0">Ha fatto ritmica, artistica, danza o discipline affini?</label>
+    <div class="radio-group" style="margin-top:10px">
+      <div class="radio-item" id="riGinnSi"><input type="radio" name="tipoSport" id="tipoGinnSi" value="si"><label for="tipoGinnSi">Sì</label></div>
+      <div class="radio-item" id="riGinnNo"><input type="radio" name="tipoSport" id="tipoGinnNo" value="no"><label for="tipoGinnNo">No</label></div>
+    </div>
+  </div>
+  <div id="bloccoAnniPratica" class="hidden" style="margin-bottom:20px">
+    <label style="font-size:.9rem;font-weight:600;color:#333;text-transform:none;letter-spacing:0">Da quanti anni pratica questa disciplina?</label>
+    <div class="radio-group" style="margin-top:10px">
+      <div class="radio-item" id="riAnniMeno"><input type="radio" name="anniPratica" id="anniMeno2" value="meno2"><label for="anniMeno2">≤2 anni</label></div>
+      <div class="radio-item" id="riAnniPiu"><input type="radio" name="anniPratica" id="anniPiu2" value="piu2"><label for="anniPiu2">>2 anni</label></div>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBackSport">← Indietro</button>
+    <button class="btn-next" id="btnNextSport">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S_SEDE — scelta sede (solo flusso P ritmica) -->
+<div class="page hidden" id="s_sede">
+<div class="card">
+  <div class="step-title">Sede preferita</div>
+  <div class="field-group">
+    <label style="font-size:.9rem;font-weight:600;color:#333;text-transform:none;letter-spacing:0">Quale sede preferisci?</label>
+    <div class="radio-group" style="margin-top:10px">
+      <div class="radio-item" id="riSedePero"><input type="radio" name="sedePref" id="sedePero" value="Pero"><label for="sedePero">Sede di Pero</label></div>
+      <div class="radio-item" id="riSedeRho"><input type="radio" name="sedePref" id="sedeRho" value="Rho"><label for="sedeRho">Sede di Rho</label></div>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBackSede">← Indietro</button>
+    <button class="btn-next" id="btnNextSede">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S1 — atleta (flusso A e B) -->
+<div class="page hidden" id="s1">
+<div class="card">
+  <div class="step-title" id="step1Title">Dati dell'atleta</div>
+  <div class="grid-2">
+    <div class="field-group"><label>Nome *</label><input type="text" id="nomeAtleta" placeholder="Sofia"></div>
+    <div class="field-group"><label>Cognome *</label><input type="text" id="cognomeAtleta" placeholder="Rossi"></div>
+  </div>
+  <div class="grid-2">
+    <div class="field-group"><label>Codice fiscale *</label><input type="text" id="cfAtleta" maxlength="16" placeholder="RSSSOF10A01F205X" style="text-transform:uppercase"></div>
+    <div class="field-group"><label>Carta d'identità</label><input type="text" id="ciAtleta" placeholder="CD9876543"></div>
+  </div>
+  <div class="field-group"><label>Data di nascita *</label><input type="date" id="dataNascitaAtleta"></div>
+  <div class="grid-3">
+    <div class="field-group"><label>Città di nascita *</label><input type="text" id="cittaNascitaAtleta" placeholder="Milano"></div>
+    <div class="field-group"><label>Prov.*</label><input type="text" id="provNascitaAtleta" maxlength="3" placeholder="MI"></div>
+    <div class="field-group"><label>Nazione *</label><input type="text" id="nazioneNascitaAtleta" placeholder="Italia"></div>
+  </div>
+  <div id="notaFirma" class="alert alert-warn hidden">L'atleta ha più di 13 anni: è richiesta anche la sua firma sul modulo cartaceo.</div>
+  <div class="section-divider">Residenza atleta</div>
+  <div class="grid-4">
+    <div class="field-group"><label>Città *</label><input type="text" id="cittaResidenzaAtleta" placeholder="Pero"></div>
+    <div class="field-group"><label>Prov.*</label><input type="text" id="provResidenzaAtleta" maxlength="3" placeholder="MI"></div>
+    <div class="field-group"><label>CAP *</label><input type="text" id="capAtleta" maxlength="5" placeholder="20016"></div>
+    <div class="field-group"><label>Civico *</label><input type="text" id="civicoAtleta" placeholder="12"></div>
+  </div>
+  <div class="field-group"><label>Via / Piazza *</label><input type="text" id="viaAtleta" placeholder="Via Roma"></div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack1">← Indietro</button>
+    <button class="btn-next" id="btnNext1">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S1mag — contatti atleta maggiorenne -->
+<div class="page hidden" id="s1mag">
+<div class="card">
+  <div class="step-title">Contatti</div>
+  <div class="alert alert-warn" style="margin-bottom:16px;font-size:.83rem;line-height:1.6"><strong>⚠️ Attenzione — dati fiscali</strong><br>Questi dati verranno associati alla ricevuta di pagamento e potranno essere utilizzati per la <strong>detrazione fiscale 730</strong>. Inseriscili con cura.</div>
+  <div class="grid-2">
+    <div class="field-group"><label>Email *</label><input type="email" id="emailAtleta" placeholder="maria.rossi@email.it"></div>
+    <div class="field-group"><label>Cellulare *</label><input type="tel" id="telefonoAtleta" placeholder="+39 333 1234567"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack1mag">← Indietro</button>
+    <button class="btn-next" id="btnNext1mag">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S2 — genitore (flusso A e B minorenne) -->
+<div class="page hidden" id="s2">
+<div class="card">
+  <div class="step-title">Dati del genitore / tutore</div>
+  <div class="alert alert-warn" style="margin-bottom:16px;font-size:.83rem;line-height:1.6"><strong>⚠️ Attenzione — dati fiscali</strong><br>Questi dati verranno associati alla ricevuta di pagamento e potranno essere utilizzati per la <strong>detrazione fiscale 730</strong>. Inseriscili con cura: <strong>una volta confermati non sarà possibile modificarli</strong>.</div>
+  <div class="grid-2">
+    <div class="field-group"><label>Nome *</label><input type="text" id="nomeGenitore" placeholder="Mario"></div>
+    <div class="field-group"><label>Cognome *</label><input type="text" id="cognomeGenitore" placeholder="Rossi"></div>
+  </div>
+  <div class="grid-2">
+    <div class="field-group"><label>Codice fiscale *</label><input type="text" id="cfGenitore" maxlength="16" placeholder="RSSMRA75A01F205X" style="text-transform:uppercase"></div>
+    <div class="field-group"><label>Carta d'identità</label><input type="text" id="ciGenitore" placeholder="AB1234567"></div>
+  </div>
+  <div class="grid-3">
+    <div class="field-group"><label>Città di nascita *</label><input type="text" id="cittaNascitaGenitore" placeholder="Milano"></div>
+    <div class="field-group"><label>Prov.*</label><input type="text" id="provNascitaGenitore" maxlength="3" placeholder="MI"></div>
+    <div class="field-group"><label>Nazione *</label><input type="text" id="nazioneNascitaGenitore" placeholder="Italia"></div>
+  </div>
+  <div class="field-group"><label>Data di nascita *</label><input type="date" id="dataNascitaGenitore"></div>
+  <div class="section-divider">Residenza genitore</div>
+  <div class="grid-4">
+    <div class="field-group"><label>Città *</label><input type="text" id="cittaResidenzaGenitore" placeholder="Pero"></div>
+    <div class="field-group"><label>Prov.*</label><input type="text" id="provResidenzaGenitore" maxlength="3" placeholder="MI"></div>
+    <div class="field-group"><label>CAP *</label><input type="text" id="capGenitore" maxlength="5" placeholder="20016"></div>
+    <div class="field-group"><label>Civico *</label><input type="text" id="civicoGenitore" placeholder="12"></div>
+  </div>
+  <div class="field-group"><label>Via / Piazza *</label><input type="text" id="viaGenitore" placeholder="Via della Liberazione"></div>
+  <div class="grid-2">
+    <div class="field-group"><label>Email *</label><input type="email" id="emailGenitore_s2" placeholder="mario@email.it"></div>
+    <div class="field-group"><label>Cellulare *</label><input type="tel" id="telefonoGenitore_s2" placeholder="+39 333 1234567"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack2">← Indietro</button>
+    <button class="btn-next" id="btnNext2">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S3 — scelta corso (flusso A, B, P fitness) -->
+<div class="page hidden" id="s3">
+<div class="card">
+  <div class="step-title">Scelta corso</div>
+  <div id="corsoAttualeInfo" class="hidden"></div>
+
+  <!-- Planning orari -->
+  <div id="planningBox" class="hidden" style="margin-bottom:18px">
+    <div style="font-size:.75rem;font-weight:700;color:#00a8b5;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Giorni di allenamento</div>
+    <div id="planningPero" class="hidden" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+        <div style="width:3px;height:14px;background:#1a3a6b;border-radius:2px"></div>
+        <span style="font-size:.72rem;font-weight:700;color:#1a3a6b;text-transform:uppercase;letter-spacing:.4px">Sede di Pero</span>
+      </div>
+      <div style="border:0.5px solid #ddd;border-radius:8px;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-size:.78rem" id="tablePero">
+          <thead><tr style="background:#f5f5f5">
+            <th style="text-align:left;padding:7px 10px;font-weight:600;color:#666;width:40%">Corso</th>
+            <th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Lun</th><th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Mar</th>
+            <th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Mer</th><th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Gio</th>
+            <th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Ven</th><th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Sab</th>
+          </tr></thead><tbody id="tbodyPero"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="planningRho" class="hidden">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+        <div style="width:3px;height:14px;background:#00a8b5;border-radius:2px"></div>
+        <span style="font-size:.72rem;font-weight:700;color:#00a8b5;text-transform:uppercase;letter-spacing:.4px">Sede di Rho</span>
+      </div>
+      <div style="border:0.5px solid #ddd;border-radius:8px;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse;table-layout:fixed;font-size:.78rem" id="tableRho">
+          <thead><tr style="background:#f5f5f5">
+            <th style="text-align:left;padding:7px 10px;font-weight:600;color:#666;width:40%">Corso</th>
+            <th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Lun</th><th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Mar</th>
+            <th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Mer</th><th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Gio</th>
+            <th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Ven</th><th style="text-align:center;padding:7px 4px;font-weight:600;color:#666">Sab</th>
+          </tr></thead><tbody id="tbodyRho"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Corso richiesto *</label>
+    <select id="corso"></select>
+  </div>
+  <div id="alertCertCorso" class="hidden" style="margin-top:4px"></div>
+  <div id="noteCorso" class="alert alert-info" style="font-size:.82rem;margin-top:12px;margin-bottom:0"></div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack3">← Indietro</button>
+    <button class="btn-next" id="btnNext3">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S3b — certificato medico -->
+<div class="page hidden" id="s3b">
+<div class="card">
+  <div class="step-title">Certificato medico</div>
+  <div class="alert alert-info" id="certInfoBox" style="margin-bottom:14px;font-size:.84rem;line-height:1.6">
+    ⚕️ <strong>Obbligatorio per accedere agli allenamenti</strong><br><br>
+    <strong>Corsi Baby:</strong> nessun certificato richiesto.<br>
+    <strong>Corsi Base (dai 6 anni):</strong> certificato per <em>attività sportiva non agonistica</em>, rilasciabile dal pediatra.<br>
+    <strong>Corsi Intermedio, Esordienti, Open, Up, Silver:</strong> certificato per <em>attività sportiva agonistica</em>.<br>
+    <strong>Corsi Fitness adulti:</strong> certificato per <em>attività sportiva non agonistica</em>.<br><br>
+    Validità: <strong>12 mesi</strong>.
+  </div>
+  <div id="s3bNuova">
+    <div class="field-group">
+      <label>L'atleta è già in possesso di un certificato medico in corso di validità? *</label>
+      <div class="radio-group">
+        <div class="radio-item" id="riSi"><input type="radio" name="certPossesso" id="certSi" value="si"><label for="certSi">Sì, ce l'ho</label></div>
+        <div class="radio-item" id="riNo"><input type="radio" name="certPossesso" id="certNo" value="no"><label for="certNo">No, non ancora</label></div>
+      </div>
+    </div>
+    <div id="certScadenzaBox" class="hidden">
+      <div class="field-group"><label>Data di scadenza del certificato *</label><input type="date" id="certScadenza"></div>
+      <div class="alert alert-info" style="font-size:.82rem;margin-top:0">Porta copia del certificato in palestra al primo allenamento.</div>
+    </div>
+    <div id="certNoBox" class="hidden">
+      <div class="alert alert-warn" style="font-size:.82rem;margin-top:0">Nessun problema. Riceverai il modulo di richiesta dalla segreteria dopo il pagamento della prima rata.</div>
+    </div>
+  </div>
+  <div id="s3bRinnovo" class="hidden"><div id="s3bRinnovoMsg"></div></div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack3b">← Indietro</button>
+    <button class="btn-next" id="btnNext3b">Avanti →</button>
+  </div>
+</div>
+</div>
+
+<!-- S4 — consensi -->
+<div class="page hidden" id="s4">
+<div class="card">
+  <div class="step-title">Consensi e dichiarazioni</div>
+  <div class="checkbox-group">
+    <input type="checkbox" id="consensoPrivacy">
+    <label for="consensoPrivacy">Dichiaro di aver preso visione dell'informativa sulla Privacy, dello Statuto, del Regolamento Generale, del MOGC Safeguarding e del Codice di Condotta pubblicati su <a href="http://www.ginnika2001.com/modulistica" target="_blank">www.ginnika2001.com/modulistica</a> e di accettarne il contenuto. *</label>
+  </div>
+  <div style="font-size:.78rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;margin:14px 0 8px">Consensi facoltativi</div>
+  <div style="background:#f9f9f9;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <div style="font-size:.82rem;color:#444;line-height:1.6;margin-bottom:10px">Si <strong>autorizza</strong> la fotografia e/o la ripresa del sottoscritto / del minore, effettuate ai soli fini istituzionali, durante lo svolgimento delle attività e/o delle manifestazioni organizzate dall'Associazione.</div>
+    <div style="display:flex;gap:16px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#333"><input type="radio" name="consensoFoto1" id="consensoFoto1Si" value="Si" style="accent-color:#1a3a6b"> Sì, autorizzo</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#333"><input type="radio" name="consensoFoto1" id="consensoFoto1No" value="No" style="accent-color:#1a3a6b"> No</label>
+    </div>
+  </div>
+  <div style="background:#f9f9f9;border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <div style="font-size:.82rem;color:#444;line-height:1.6;margin-bottom:10px">Si <strong>acconsente</strong> al trattamento e alla pubblicazione, per i soli fini istituzionali, di video, fotografie e/o immagini atte a rivelare l'identità del sottoscritto / del minore, sul sito web e sul periodico dell'Associazione e nelle bacheche affisse nei locali della medesima.</div>
+    <div style="display:flex;gap:16px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#333"><input type="radio" name="consensoFoto2" id="consensoFoto2Si" value="Si" style="accent-color:#1a3a6b"> Sì, acconsento</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#333"><input type="radio" name="consensoFoto2" id="consensoFoto2No" value="No" style="accent-color:#1a3a6b"> No</label>
+    </div>
+  </div>
+  <div style="background:#f9f9f9;border-radius:8px;padding:12px 14px;margin-bottom:14px">
+    <div style="font-size:.82rem;color:#444;line-height:1.6;margin-bottom:10px">Si <strong>acconsente</strong> all'uso dei dati personali da parte dell'Associazione, ai sensi dell'art. 13 D.lgs. n. 196/2003 e del GDPR 679/2016 per la realizzazione di iniziative di profilazione e di comunicazione diretta (via mail, messaggistica telefonica, posta ordinaria) a fini di marketing sia diretti che di partner esterni.</div>
+    <div style="display:flex;gap:16px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#333"><input type="radio" name="consensoMarketing" id="consensoMarketingSi" value="Si" style="accent-color:#1a3a6b"> Sì, acconsento</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;font-weight:500;color:#333"><input type="radio" name="consensoMarketing" id="consensoMarketingNo" value="No" style="accent-color:#1a3a6b"> No</label>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBack4">← Indietro</button>
+    <button class="btn-next" id="btnInvia">Invia</button>
+  </div>
+</div>
+</div>
+
+<!-- Conferma -->
+<div id="sConferma" class="hidden">
+  <div class="page"><div class="card">
+    <div class="conferma-header">
+      <div class="check">✅</div>
+      <h2 id="confermaTitle"></h2>
+      <p id="msgConferma"></p>
+    </div>
+  </div></div>
+  <div class="page" id="quoteSection"><div class="card">
+    <div class="step-title">Quote stagione <span id="quoteStagione"></span></div>
+    <div id="quoteConferma"></div>
+  </div></div>
+  <div class="page" id="bonificoSection"><div class="card">
+    <div class="step-title">Come pagare</div>
+    <div class="alert alert-warn" style="margin-top:0">L'unica forma di pagamento accettata è il <strong>bonifico bancario</strong>.</div>
+    <div class="bonifico-box">
+      <h3>Dati per il bonifico</h3>
+      <div class="b-row"><div class="b-label">Intestatario</div><div class="b-value-row"><div class="b-value" id="valInt"></div><button class="btn-copia" id="cpInt">Copia</button></div></div>
+      <div class="b-row"><div class="b-label">IBAN</div><div class="b-value-row"><div class="b-value iban" id="valIban"></div><button class="btn-copia" id="cpIban">Copia</button></div></div>
+      <div class="b-row" style="margin-bottom:0"><div class="b-label">Causale</div><div class="b-value-row"><div class="b-value causale" id="valCausale"></div><button class="btn-copia" id="cpCausale">Copia</button></div></div>
+    </div>
+    <div class="alert alert-info" style="font-size:.82rem;margin-bottom:0">Porta in palestra: <strong>modulo firmato</strong> + <strong>copia bonifico</strong> + <strong>certificato medico</strong>.</div>
+  </div></div>
+  <div class="page" id="uploadSection"><div class="card">
+    <div class="step-title">Carica la ricevuta del bonifico</div>
+    <p style="font-size:.84rem;color:#666;margin-bottom:12px">Puoi caricarla ora oppure tornare tramite il link che riceverai nell'email.</p>
+    <div class="upload-area" id="uploadArea">
+      <p id="uploadDragTxt">📎 Trascina il file o clicca per selezionarlo<br><small>PDF, JPG, PNG</small></p>
+      <input type="file" id="fileRicevuta" accept=".pdf,.jpg,.jpeg,.png" style="display:none">
+      <button class="btn-full" id="btnSfoglia" style="width:auto;padding:10px 24px;margin-top:4px">Sfoglia file</button>
+    </div>
+    <div id="uploadNomeFile" style="font-size:.84rem;color:#2e7d32;margin-top:8px;display:none"></div>
+    <button class="btn-full" id="btnCarica" style="display:none;margin-top:12px">Carica ricevuta</button>
+    <div id="uploadEsito"></div>
+  </div></div>
+  <div class="page"><p style="text-align:center;font-size:.82rem;color:#999;padding:10px 0">Per informazioni: <strong>info@ginnika2001.com</strong> — WhatsApp <strong>+39 351 4136992</strong></p></div>
+</div>
+
+<!-- Upload diretto da link email -->
+<div id="sUploadDiretto" class="hidden">
+  <div class="page"><div class="card" id="uploadDirettoCard">
+    <div class="step-title">📎 Carica la ricevuta del bonifico</div>
+    <div id="uploadDirettoInfo" class="alert alert-info">Ricerca in corso...</div>
+  </div></div>
+  <div class="page"><p style="text-align:center;font-size:.82rem;color:#999;padding:10px 0">Per informazioni: <strong>info@ginnika2001.com</strong> — WhatsApp <strong>+39 351 4136992</strong></p></div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURAZIONE BACKEND
+// ============================================================
+var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxSeikYgf7qn2M5BDL4WnwS_3O-wDi4aDSJWbjpi-znUi05BKRN_4AXoSsJXI9OYqn7/exec';
+
+// Dati caricati dal backend
+var STAGIONE='', IBAN='', INTESTATARIO='', MAX_MB=10;
+var CORSI_DATA=[], QUOTE_DATA={}, PLANNING_DATA={};
+
+// Stato
+var FLUSSO=null, ATLETA=null, DATI=null, MAGGIORENNE=false;
+var TIPO_ATTIVITA=null, SPORT_PREGRESSA=null, ANNI_PRATICA=null;
+var SEDE_PREF=null, CORSO_P_AUTO=null, DA_VALUTARE_P=false;
+
+var STEPS=['s0','sB','s_tipo','s1p','s2p','s_sport','s_sede','s1','s1mag','s2','s3','s3b','s4','sConferma','sUploadDiretto'];
+
+// ============================================================
+// CHIAMATA AL BACKEND — fetch con CORS
+// ============================================================
+function chiamaBackend(azione, dati, callback) {
+  fetch(BACKEND_URL, {
+    method: 'POST',
+    body: JSON.stringify({ azione: azione, dati: dati }),
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){ callback(null, data); })
+  .catch(function(err){ callback(err, null); });
+}
+
+// ============================================================
+// CARICA DATI INIZIALI
+// ============================================================
+function caricaDatiIniziali() {
+  // Controlla se c'è un parametro cf nell'URL (upload diretto)
+  var params = new URLSearchParams(window.location.search);
+  var cf = params.get('cf') || '';
+
+  fetch(BACKEND_URL)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      STAGIONE     = data.stagione     || '2026/2027';
+      IBAN         = data.iban         || '';
+      INTESTATARIO = data.intestatario || '';
+      MAX_MB       = data.maxMb        || 10;
+      CORSI_DATA   = data.corsi        || [];
+      QUOTE_DATA   = data.quote        || {};
+      PLANNING_DATA= data.planning     || {};
+
+      document.getElementById('headerSub').textContent = 'Stagione ' + STAGIONE + ' \u2014 Iscrizioni e lezioni di prova';
+      document.getElementById('quoteStagione').textContent = STAGIONE;
+      document.getElementById('uploadDragTxt').innerHTML = '\ud83d\udcce Trascina il file o clicca per selezionarlo<br><small>PDF, JPG, PNG \u2014 max ' + MAX_MB + 'MB</small>';
+
+      popolaSelectCorsi();
+      popolaPlanning();
+      popolaBonifico();
+
+      document.getElementById('loadingOverlay').classList.add('hidden');
+
+      if (cf) { modalitaUploadDiretto(cf); }
+    })
+    .catch(function(err){
+      document.getElementById('loadingOverlay').innerHTML = '<p style="color:#e53935;padding:20px;text-align:center">Errore di caricamento. Ricarica la pagina.<br><br><button onclick="location.reload()" style="padding:10px 20px;background:#1a3a6b;color:#fff;border:none;border-radius:6px;cursor:pointer">Ricarica</button></p>';
+    });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  caricaDatiIniziali();
+
+  // S0
+  document.getElementById('btnP').onclick = function(){ FLUSSO='P'; vai('s_tipo'); };
+  document.getElementById('btnA').onclick = function(){ FLUSSO='A'; vai('s_tipo'); };
+  document.getElementById('btnB').onclick = function(){ FLUSSO='B'; vai('sB'); };
+
+  // SB
+  document.getElementById('btnCerca').onclick = cercaCF;
+  document.getElementById('cfLookup').onkeydown = function(e){ if(e.key==='Enter') cercaCF(); };
+  document.getElementById('btnBackB').onclick = function(){ vai('s0'); nascondiProgress(); };
+
+  // S_TIPO
+  document.getElementById('btnTipoRitmica').onclick = function(){
+    TIPO_ATTIVITA='ritmica';
+    if(FLUSSO==='P'){ vai('s1p'); progress(1); }
+    else { popolaSelectCorsi(); vai('s1'); progress(1); }
+  };
+  document.getElementById('btnTipoFitness').onclick = function(){
+    TIPO_ATTIVITA='fitness';
+    if(FLUSSO==='P'){ vai('s1p'); progress(1); }
+    else { aggiornaSelectPerFitness(); vai('s1'); progress(1); }
+  };
+  document.getElementById('btnBackTipo').onclick = function(){ vai('s0'); nascondiProgress(); };
+
+  // S1P
+  document.getElementById('btnBack1p').onclick = function(){ vai('s_tipo'); nascondiProgress(); };
+  document.getElementById('btnNext1p').onclick = function(){
+    if(ok(['pNomeAtleta','pCognomeAtleta','pCfAtleta','pDataNascitaAtleta','pCittaNascitaAtleta'])){ vai('s2p'); progress(2); }
+  };
+
+  // S2P
+  document.getElementById('btnBack2p').onclick = function(){ vai('s1p'); progress(1); };
+  document.getElementById('btnNext2p').onclick = function(){
+    if(ok(['pNomeGenitore','pCognomeGenitore','pCfGenitore','pDataNascitaGenitore','pCittaNascitaGenitore','pEmail','pTelefono'])){
+      if(TIPO_ATTIVITA==='fitness'){
+        // Fitness: vai direttamente a scelta corso adulti
+        aggiornaSelectPerFitness();
+        document.getElementById('noteCorso').textContent = 'Le quote per questo corso ti verranno comunicate dalla segreteria via email.';
+        vai('s3'); progress(3);
+      } else {
+        // Ritmica: vai al questionario esperienza
+        vai('s_sport'); progress(3);
+      }
+    }
+  };
+
+  // S_SPORT
+  document.getElementById('haSportSi').onchange = function(){
+    coloraRadioCustom('riSportSi','riSportNo'); mostra('bloccoTipoSport');
+    document.querySelectorAll('input[name="tipoSport"]').forEach(function(r){ r.checked=false; });
+    nascondi('bloccoAnniPratica');
+  };
+  document.getElementById('haSportNo').onchange = function(){
+    coloraRadioCustom('riSportNo','riSportSi'); nascondi('bloccoTipoSport'); nascondi('bloccoAnniPratica');
+    document.querySelectorAll('input[name="tipoSport"],input[name="anniPratica"]').forEach(function(r){ r.checked=false; });
+  };
+  document.getElementById('tipoGinnSi').onchange = function(){
+    coloraRadioCustom('riGinnSi','riGinnNo'); mostra('bloccoAnniPratica');
+    document.querySelectorAll('input[name="anniPratica"]').forEach(function(r){ r.checked=false; });
+  };
+  document.getElementById('tipoGinnNo').onchange = function(){
+    coloraRadioCustom('riGinnNo','riGinnSi'); nascondi('bloccoAnniPratica');
+    document.querySelectorAll('input[name="anniPratica"]').forEach(function(r){ r.checked=false; });
+  };
+  document.getElementById('anniMeno2').onchange = function(){ coloraRadioCustom('riAnniMeno','riAnniPiu'); };
+  document.getElementById('anniPiu2').onchange  = function(){ coloraRadioCustom('riAnniPiu','riAnniMeno'); };
+  document.getElementById('btnBackSport').onclick = function(){ vai('s2p'); progress(2); };
+  document.getElementById('btnNextSport').onclick = function(){
+    var haSport=document.querySelector('input[name="haSport"]:checked');
+    if(!haSport){ alert('Compila tutti i campi obbligatori.'); return; }
+    if(haSport.value==='si'){
+      var tipoSport=document.querySelector('input[name="tipoSport"]:checked');
+      if(!tipoSport){ alert('Compila tutti i campi obbligatori.'); return; }
+      if(tipoSport.value==='si'){
+        var anniSel=document.querySelector('input[name="anniPratica"]:checked');
+        if(!anniSel){ alert('Compila tutti i campi obbligatori.'); return; }
+        ANNI_PRATICA=anniSel.value; SPORT_PREGRESSA='ritmica_danza';
+      } else { SPORT_PREGRESSA='altro'; ANNI_PRATICA=null; }
+    } else { SPORT_PREGRESSA='no'; ANNI_PRATICA=null; }
+    vai('s_sede'); progress(3);
+  };
+
+  // S_SEDE
+  document.getElementById('sedePero').onchange = function(){ coloraRadioCustom('riSedePero','riSedeRho'); };
+  document.getElementById('sedeRho').onchange  = function(){ coloraRadioCustom('riSedeRho','riSedePero'); };
+  document.getElementById('btnBackSede').onclick = function(){ vai('s_sport'); progress(3); };
+  document.getElementById('btnNextSede').onclick = function(){
+    var sedeSel=document.querySelector('input[name="sedePref"]:checked');
+    if(!sedeSel){ alert('Seleziona una sede.'); return; }
+    SEDE_PREF=sedeSel.value;
+    // Assegna corso automatico — NON mostra S3
+    if(SPORT_PREGRESSA==='ritmica_danza'&&ANNI_PRATICA==='piu2'){
+      DA_VALUTARE_P=true; CORSO_P_AUTO=null;
+    } else {
+      var cfVal=document.getElementById('pCfAtleta').value.trim().toUpperCase();
+      CORSO_P_AUTO=assegnaCorsoDaTabella(cfVal, SEDE_PREF, SPORT_PREGRESSA, ANNI_PRATICA);
+      DA_VALUTARE_P=(CORSO_P_AUTO==='DA VALUTARE');
+    }
+    // Vai direttamente ai consensi
+    vai('s4'); progress(4);
+  };
+
+  // S1
+  document.getElementById('btnBack1').onclick = function(){
+    if(FLUSSO==='B') vai('sB'); else vai('s_tipo'); nascondiProgress();
+  };
+  document.getElementById('btnNext1').onclick = function(){
+    if(ok(['nomeAtleta','cognomeAtleta','cfAtleta','dataNascitaAtleta','cittaNascitaAtleta','provNascitaAtleta','nazioneNascitaAtleta','cittaResidenzaAtleta','provResidenzaAtleta','capAtleta','viaAtleta','civicoAtleta'])){
+      var cf1=document.getElementById('cfAtleta').value.trim().toUpperCase();
+      MAGGIORENNE=isMaggiorenne(cf1);
+      document.getElementById('pd2l').textContent=MAGGIORENNE?'Contatti':'Genitore/Tutore';
+      vai(MAGGIORENNE?'s1mag':'s2'); progress(2);
+    }
+  };
+  document.getElementById('dataNascitaAtleta').onchange = function(){
+    var a=new Date().getFullYear()-new Date(this.value).getFullYear();
+    a>=13?mostra('notaFirma'):nascondi('notaFirma');
+  };
+  document.getElementById('cfAtleta').onchange = function(){
+    var cf=this.value.trim().toUpperCase();
+    if(cf.length===16){ var eta=calcolaEtaDaCF(cf); (eta!==null&&eta>=13)?mostra('notaFirma'):nascondi('notaFirma'); }
+  };
+
+  // S1mag
+  document.getElementById('btnBack1mag').onclick = function(){ vai('s1'); progress(1); };
+  document.getElementById('btnNext1mag').onclick = function(){
+    if(ok(['emailAtleta','telefonoAtleta'])){
+      if(TIPO_ATTIVITA==='fitness'){ aggiornaSelectPerFitness(); }
+      document.getElementById('noteCorso').textContent='Le quote verranno mostrate dopo l\'invio.';
+      vai('s3'); progress(3);
+    }
+  };
+
+  // S2
+  document.getElementById('btnBack2').onclick = function(){ vai('s1'); progress(1); };
+  document.getElementById('btnNext2').onclick = function(){
+    if(ok(['nomeGenitore','cognomeGenitore','cfGenitore','cittaNascitaGenitore','provNascitaGenitore','nazioneNascitaGenitore','dataNascitaGenitore','cittaResidenzaGenitore','provResidenzaGenitore','capGenitore','viaGenitore','civicoGenitore','emailGenitore_s2','telefonoGenitore_s2'])){
+      if(TIPO_ATTIVITA==='fitness'){ aggiornaSelectPerFitness(); }
+      document.getElementById('noteCorso').textContent='Le quote verranno mostrate dopo l\'invio.';
+      vai('s3'); progress(3);
+    }
+  };
+
+  // S3
+  document.getElementById('corso').onchange = function(){ aggiornaAlertCert(); };
+  document.getElementById('btnBack3').onclick = function(){
+    if(FLUSSO==='P'){ vai('s_sede'); progress(3); }
+    else if(MAGGIORENNE){ vai('s1mag'); progress(2); }
+    else{ vai('s2'); progress(2); }
+  };
+  document.getElementById('btnNext3').onclick = function(){
+    var corsoSel=g('corso');
+    if(!corsoSel){ alert('Seleziona un corso.'); return; }
+    if(FLUSSO==='B'){
+      mostra('s3bRinnovo'); nascondi('s3bNuova');
+      var stato=ATLETA?ATLETA.statoCert:'assente', scad=ATLETA?ATLETA.scadenzaCert:'';
+      var msg=stato==='scaduto'?'<div class="alert alert-danger">❌ Certificato <strong>scaduto il '+scad+'</strong>. Rinnova prima di riprendere gli allenamenti.</div>'
+        :stato==='in_scadenza'?'<div class="alert alert-warn">⚠️ Certificato in scadenza il <strong>'+scad+'</strong>. Consigliamo di rinnovarlo prima dell\'inizio della stagione.</div>'
+        :stato==='ok'?'<div class="alert alert-ok">✅ Certificato valido fino al <strong>'+scad+'</strong>. Porta copia in palestra al primo allenamento.</div>'
+        :'<div class="alert alert-warn">⚠️ Nessun certificato registrato. Contatta la segreteria: <strong>info@ginnika2001.com</strong></div>';
+      document.getElementById('s3bRinnovoMsg').innerHTML=msg;
+      vai('s3b'); progress(3); return;
+    }
+    mostra('s3bNuova'); nascondi('s3bRinnovo'); vai('s3b'); progress(3);
+  };
+
+  // S3b
+  document.getElementById('certSi').onchange = function(){ mostra('certScadenzaBox'); nascondi('certNoBox'); coloraRadio('si'); };
+  document.getElementById('certNo').onchange = function(){ nascondi('certScadenzaBox'); mostra('certNoBox'); coloraRadio('no'); };
+  document.getElementById('btnBack3b').onclick = function(){ vai('s3'); progress(3); };
+  document.getElementById('btnNext3b').onclick = function(){
+    if(FLUSSO==='B'){ vai('s4'); progress(4); return; }
+    var sel=document.querySelector('input[name="certPossesso"]:checked');
+    if(!sel){ alert('Indica se sei in possesso del certificato medico.'); return; }
+    if(sel.value==='si'&&!g('certScadenza')){ alert('Inserisci la data di scadenza del certificato.'); return; }
+    vai('s4'); progress(4);
+  };
+
+  // S4
+  document.getElementById('btnBack4').onclick = function(){
+    if(FLUSSO==='P'){ vai('s_sede'); progress(3); }
+    else{ vai('s3b'); progress(3); }
+  };
+  document.getElementById('btnInvia').onclick = inviaForm;
+
+  // Upload
+  document.getElementById('btnSfoglia').onclick = function(){ document.getElementById('fileRicevuta').click(); };
+  document.getElementById('fileRicevuta').onchange = function(){
+    if(this.files[0]){
+      document.getElementById('uploadNomeFile').textContent='✔ '+this.files[0].name;
+      document.getElementById('uploadNomeFile').style.display='block';
+      document.getElementById('btnCarica').style.display='block';
+    }
+  };
+  document.getElementById('btnCarica').onclick = caricaRicevuta;
+  var area=document.getElementById('uploadArea');
+  area.ondragover=function(e){ e.preventDefault(); area.style.borderColor='#00a8b5'; };
+  area.ondragleave=function(){ area.style.borderColor='#ccc'; };
+  area.ondrop=function(e){
+    e.preventDefault(); area.style.borderColor='#ccc';
+    if(e.dataTransfer.files[0]){
+      document.getElementById('fileRicevuta').files=e.dataTransfer.files;
+      document.getElementById('uploadNomeFile').textContent='✔ '+e.dataTransfer.files[0].name;
+      document.getElementById('uploadNomeFile').style.display='block';
+      document.getElementById('btnCarica').style.display='block';
+    }
+  };
+}
+
+// ============================================================
+// ASSEGNAZIONE CORSO AUTOMATICA — Flusso P ritmica
+// ============================================================
+function assegnaCorsoDaTabella(cfAtleta, sede, sportPregressa, anniPratica) {
+  var cf=cfAtleta.toUpperCase();
+  var aa=parseInt(cf.substring(6,8));
+  if(isNaN(aa)) return 'DA VALUTARE';
+  var annoCorr=new Date().getFullYear();
+  var anno=aa<=(annoCorr-2000)?2000+aa:1900+aa;
+  if(sportPregressa==='ritmica_danza'&&anniPratica==='piu2') return 'DA VALUTARE';
+  if(sportPregressa==='ritmica_danza'&&anniPratica==='meno2'&&anno<2020) return 'DA VALUTARE';
+  if(anno<=2014) return 'DA VALUTARE';
+  if(anno>=2021) return 'Baby Pero';
+  if(anno===2020) return sede==='Rho'?'Base Rho':'Base Pero';
+  if(anno>=2018&&anno<=2019) return sede==='Rho'?'Base Rho':'Base Pero';
+  if(anno>=2015&&anno<=2017) return sede==='Rho'?'Intermedio Rho':'Intermedio Pero';
+  return 'DA VALUTARE';
+}
+
+// ============================================================
+// ETA' / CF
+// ============================================================
+function calcolaEtaDaCF(cf) {
+  if(!cf||cf.length<11) return null;
+  cf=cf.toUpperCase();
+  var MESI={A:1,B:2,C:3,D:4,E:5,H:6,L:7,M:8,P:9,R:10,S:11,T:12};
+  var aa=parseInt(cf.substring(6,8)), mm=MESI[cf.charAt(8)]||1, gg=parseInt(cf.substring(9,11));
+  if(gg>40) gg-=40;
+  var annoCorr=new Date().getFullYear(), anno=aa<=(annoCorr-2000)?2000+aa:1900+aa;
+  var dataN=new Date(anno,mm-1,gg), oggi=new Date();
+  var eta=oggi.getFullYear()-dataN.getFullYear();
+  if(oggi.getMonth()<dataN.getMonth()||(oggi.getMonth()===dataN.getMonth()&&oggi.getDate()<dataN.getDate())) eta--;
+  return eta;
+}
+function isMaggiorenne(cf){ var e=calcolaEtaDaCF(cf); return e!==null&&e>=18; }
+
+// ============================================================
+// SELECT CORSI
+// ============================================================
+function popolaSelectCorsi() {
+  var sel=document.getElementById('corso');
+  sel.innerHTML='';
+  var opt0=document.createElement('option'); opt0.value=''; opt0.textContent='-- Seleziona corso --'; sel.appendChild(opt0);
+  var LABEL_CAT={'Baby':'Corsi baby','Base':'Corsi base','Intermedio':'Corsi intermedi','Promozionale':'Corsi promozionali','Agonistica':'Corsi agonistici','Adulti':'Corsi adulti'};
+  var categorie=[], mappa={};
+  CORSI_DATA.forEach(function(c){
+    if(!mappa[c.categoria]){ mappa[c.categoria]=[]; categorie.push(c.categoria); }
+    mappa[c.categoria].push(c);
+  });
+  categorie.forEach(function(cat){
+    var grp=document.createElement('optgroup'); grp.label=LABEL_CAT[cat]||cat;
+    mappa[cat].forEach(function(c){
+      var opt=document.createElement('option'); opt.value=c.nome;
+      opt.textContent=c.annate?c.nome+' — '+c.annate:c.nome;
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
+  });
+}
+
+function aggiornaSelectPerFitness() {
+  var sel=document.getElementById('corso');
+  sel.innerHTML='';
+  var opt0=document.createElement('option'); opt0.value=''; opt0.textContent='-- Seleziona corso --'; sel.appendChild(opt0);
+  CORSI_DATA.forEach(function(c){
+    if(c.categoria!=='Adulti') return;
+    var opt=document.createElement('option'); opt.value=c.nome; opt.textContent=c.nome; sel.appendChild(opt);
+  });
+  aggiornaAlertCert();
+  // Mostra solo planning adulti
+  popolaPlanningFitness();
+}
+
+function aggiornaAlertCert() {
+  var corso=g('corso'), box=document.getElementById('alertCertCorso');
+  if(!corso){ box.classList.add('hidden'); return; }
+  var richiedeCert='no';
+  for(var i=0;i<CORSI_DATA.length;i++){ if(CORSI_DATA[i].nome===corso){ richiedeCert=CORSI_DATA[i].richiedeCert||'no'; break; } }
+  if(richiedeCert==='no')                { box.className='alert alert-ok';   box.innerHTML='🟢 <strong>Nessun certificato medico richiesto</strong> per questo corso.'; }
+  else if(richiedeCert==='non_agonistico'){ box.className='alert alert-info'; box.innerHTML='🔵 <strong>Certificato medico per attività sportiva non agonistica</strong>, rilasciabile dal pediatra di base.'; }
+  else                                    { box.className='alert alert-warn'; box.innerHTML='🟡 <strong>Certificato medico per attività sportiva agonistica</strong>. La società ti invierà il modulo di richiesta dopo il pagamento della prima rata.'; }
+  box.classList.remove('hidden');
+}
+
+function popolaPlanning() {
+  if(!PLANNING_DATA||!Object.keys(PLANNING_DATA).length) return;
+  var GIORNI_FULL=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  var corsePero=[],corsiRho=[];
+  CORSI_DATA.forEach(function(c){
+    if(!PLANNING_DATA[c.nome]||c.categoria==='Adulti') return;
+    (c.nome.toLowerCase().indexOf('rho')>=0?corsiRho:corsePero).push(c.nome);
+  });
+  renderTabella(corsePero,'tbodyPero','planningPero');
+  renderTabella(corsiRho,'tbodyRho','planningRho');
+  if(corsePero.length||corsiRho.length) document.getElementById('planningBox').classList.remove('hidden');
+}
+
+function popolaPlanningFitness() {
+  // Resetta e mostra solo corsi adulti
+  document.getElementById('tbodyPero').innerHTML='';
+  document.getElementById('tbodyRho').innerHTML='';
+  document.getElementById('planningPero').classList.add('hidden');
+  document.getElementById('planningRho').classList.add('hidden');
+  var corsiAdulti=[];
+  CORSI_DATA.forEach(function(c){
+    if(c.categoria==='Adulti'&&PLANNING_DATA[c.nome]) corsiAdulti.push(c.nome);
+  });
+  if(corsiAdulti.length){
+    renderTabella(corsiAdulti,'tbodyPero','planningPero');
+    document.getElementById('planningBox').classList.remove('hidden');
+  }
+}
+
+function renderTabella(corsi,tbodyId,sezioneId){
+  var tbody=document.getElementById(tbodyId); if(!tbody||!corsi.length) return;
+  document.getElementById(sezioneId).classList.remove('hidden');
+  var GIORNI_FULL=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  corsi.forEach(function(nome,idx){
+    var giorni=PLANNING_DATA[nome]||[];
+    var tr=document.createElement('tr'); if(idx>0) tr.style.borderTop='0.5px solid #eee';
+    var tdN=document.createElement('td'); tdN.style.cssText='padding:7px 10px;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; tdN.textContent=nome; tr.appendChild(tdN);
+    GIORNI_FULL.forEach(function(g){
+      var td=document.createElement('td'); td.style.cssText='text-align:center;padding:6px 4px';
+      td.innerHTML=giorni.indexOf(g)!==-1
+        ?'<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:#1a3a6b;border-radius:4px"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
+        :'<span style="display:inline-block;width:20px;height:20px;background:#f5f5f5;border:0.5px solid #ddd;border-radius:4px"></span>';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function popolaBonifico() {
+  var elInt=document.getElementById('valInt'), elIban=document.getElementById('valIban');
+  if(elInt) elInt.textContent=INTESTATARIO;
+  if(elIban&&IBAN){ var raw=IBAN.replace(/\s/g,''); elIban.textContent=raw.match(/.{1,4}/g).join(' '); }
+}
+
+// ============================================================
+// PROGRESS / NAVIGAZIONE
+// ============================================================
+function vai(step){
+  STEPS.forEach(function(s){ var e=document.getElementById(s); if(e) e.classList.add('hidden'); });
+  var el=document.getElementById(step); if(el) el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+function progress(n){
+  document.getElementById('progressBar').classList.remove('hidden');
+  for(var i=1;i<=4;i++){
+    var d=document.getElementById('pd'+i); d.classList.remove('active','done');
+    if(i<n) d.classList.add('done'); else if(i===n) d.classList.add('active');
+  }
+}
+function nascondiProgress(){ document.getElementById('progressBar').classList.add('hidden'); }
+function coloraRadio(v){
+  document.getElementById('riSi').classList.toggle('sel',v==='si');
+  document.getElementById('riNo').classList.toggle('sel',v==='no');
+}
+function coloraRadioCustom(selId,deselId){
+  var s=document.getElementById(selId),d=document.getElementById(deselId);
+  if(s) s.classList.add('sel'); if(d) d.classList.remove('sel');
+}
+function mostra(id){ var e=document.getElementById(id); if(e) e.classList.remove('hidden'); }
+function nascondi(id){ var e=document.getElementById(id); if(e) e.classList.add('hidden'); }
+function g(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function sv(id,v){ var e=document.getElementById(id); if(e&&v!=null) e.value=v; }
+function dt(id){ var e=document.getElementById(id); if(!e||!e.value) return ''; var p=e.value.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+
+// ============================================================
+// LOOKUP CF (flusso B)
+// ============================================================
+function cercaCF(){
+  var cf=g('cfLookup').toUpperCase();
+  if(cf.length!==16){ document.getElementById('lookupResult').innerHTML='<div class="alert alert-warn">Il codice fiscale deve essere di 16 caratteri.</div>'; return; }
+  var btn=document.getElementById('btnCerca'); btn.disabled=true; btn.textContent='Ricerca...';
+  document.getElementById('lookupResult').innerHTML='<div class="alert alert-info">Ricerca in corso...</div>';
+  chiamaBackend('cercaAtletaPerCF',{cf:cf},function(err,r){
+    btn.disabled=false; btn.textContent='Cerca';
+    if(err||!r){ document.getElementById('lookupResult').innerHTML='<div class="alert alert-danger">Errore di connessione. Riprova.</div>'; return; }
+    if(!r.trovato){
+      document.getElementById('lookupResult').innerHTML=
+        '<div class="alert alert-warn" style="margin-bottom:10px">⚠️ Codice fiscale non trovato. Controlla oppure procedi come nuova iscrizione.</div>'+
+        '<button class="btn-outline" id="btnVaiNuova">Procedi come nuova iscrizione →</button>';
+      document.getElementById('btnVaiNuova').onclick=function(){ FLUSSO='A'; vai('s_tipo'); };
+      return;
+    }
+    ATLETA=r;
+    var _s=r.scadenzaCert||'';
+    var cert=r.statoCert==='scaduto'?'<div class="alert alert-danger">❌ Certificato <strong>scaduto il '+_s+'</strong>.</div>'
+      :r.statoCert==='in_scadenza'?'<div class="alert alert-warn">⚠️ Certificato in scadenza il <strong>'+_s+'</strong>.</div>'
+      :r.statoCert==='ok'?'<div class="alert alert-ok">✅ Certificato valido fino al <strong>'+_s+'</strong>.</div>'
+      :'<div class="alert alert-warn">⚠️ Nessun certificato registrato.</div>';
+    document.getElementById('lookupResult').innerHTML=
+      '<div class="atleta-card"><div class="nome">'+r.nomeAtleta+' '+r.cognomeAtleta+'</div>'+
+      '<div class="det">Corso attuale: <strong>'+r.corsoAttuale+'</strong></div></div>'+cert+
+      '<button class="btn-full" id="btnProsegui" style="margin-top:8px">Continua con il rinnovo →</button>';
+    document.getElementById('btnProsegui').onclick=function(){ popolaSelectCorsi(); precompila(); vai('s1'); progress(1); };
+  });
+}
+
+function precompila(){
+  var r=ATLETA; if(!r) return;
+  sv('nomeAtleta',r.nomeAtleta); sv('cognomeAtleta',r.cognomeAtleta);
+  sv('cfAtleta',r.cfAtleta); sv('ciAtleta',r.ciAtleta||'');
+  sv('dataNascitaAtleta',r.dataNascitaAtleta);
+  sv('cittaNascitaAtleta',r.cittaNascitaAtleta||''); sv('provNascitaAtleta',r.provNascitaAtleta||''); sv('nazioneNascitaAtleta',r.nazioneNascitaAtleta||'');
+  sv('viaAtleta',r.viaAtleta||''); sv('civicoAtleta',r.civicoAtleta||''); sv('capAtleta',r.capAtleta||'');
+  sv('cittaResidenzaAtleta',r.cittaResidenzaAtleta||''); sv('provResidenzaAtleta',r.provResidenzaAtleta||'');
+  sv('nomeGenitore',r.nomeGenitore); sv('cognomeGenitore',r.cognomeGenitore);
+  sv('cfGenitore',r.cfGenitore); sv('ciGenitore',r.ciGenitore||'');
+  sv('dataNascitaGenitore',r.dataNascitaGenitore);
+  sv('cittaNascitaGenitore',r.cittaNascitaGenitore||''); sv('provNascitaGenitore',r.provNascitaGenitore||''); sv('nazioneNascitaGenitore',r.nazioneNascitaGenitore||'');
+  sv('viaGenitore',r.viaGenitore||''); sv('civicoGenitore',r.civicoGenitore||''); sv('capGenitore',r.capGenitore||'');
+  sv('cittaResidenzaGenitore',r.cittaResidenzaGenitore||''); sv('provResidenzaGenitore',r.provResidenzaGenitore||'');
+  sv('emailGenitore_s2',r.emailGenitore||''); sv('telefonoGenitore_s2',r.telefonoGenitore||'');
+  // Preseleziona corso consigliato
+  if(r.corsoConsigliato){
+    var sel=document.getElementById('corso');
+    for(var i=0;i<sel.options.length;i++){
+      if(sel.options[i].value===r.corsoConsigliato){ sel.selectedIndex=i; break; }
+    }
+    aggiornaAlertCert();
+  }
+  var cambiato=r.corsoNuovaStagione&&r.corsoNuovaStagione!==r.corsoAttuale;
+  var html='<div class="alert alert-info" style="margin-bottom:10px">Corso anno scorso: <strong>'+(r.corsoAttuale||'—')+'</strong>';
+  if(cambiato) html+='<br>Corso consigliato per '+STAGIONE+': <strong>'+r.corsoConsigliato+'</strong>';
+  html+='<br><span style="font-size:.8rem;opacity:.8">Puoi confermarlo o selezionarne un altro.</span></div>';
+  document.getElementById('corsoAttualeInfo').innerHTML=html;
+  mostra('corsoAttualeInfo');
+}
+
+// ============================================================
+// VALIDAZIONE
+// ============================================================
+function ok(campi){
+  var pass=true;
+  campi.forEach(function(c){ var el=document.getElementById(c); if(!el) return; if(!el.value.trim()){ el.classList.add('errore'); pass=false; } else el.classList.remove('errore'); });
+  if(!pass){ var e=document.querySelector('.errore'); if(e) e.scrollIntoView({behavior:'smooth',block:'center'}); alert('Compila tutti i campi obbligatori.'); }
+  return pass;
+}
+
+// ============================================================
+// INVIO
+// ============================================================
+function inviaForm(){
+  if(!document.getElementById('consensoPrivacy').checked){ alert('La dichiarazione su Privacy e Statuto è richiesta per procedere.'); return; }
+  var r1=document.querySelector('input[name="consensoFoto1"]:checked');
+  var r2=document.querySelector('input[name="consensoFoto2"]:checked');
+  var r3=document.querySelector('input[name="consensoMarketing"]:checked');
+  if(!r1||!r2||!r3){ alert('Per favore esprimi una scelta (Sì o No) per tutti i consensi facoltativi.'); return; }
+  var btn=document.getElementById('btnInvia'); btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Invio...';
+  DATI=raccogliDati();
+  var azione=FLUSSO==='P'?'salvaLezioneProva':'salvaIscrizione';
+  var cb=FLUSSO==='P'?mostraConfermaProva:mostraConfermaIscrizione;
+  chiamaBackend(azione, DATI, function(err,r){
+    btn.disabled=false; btn.textContent='Invia';
+    if(err||!r){ alert('Errore di connessione. Riprova.'); return; }
+    if(r.successo){ cb(); } else { alert('Errore: '+(r.errore||'sconosciuto')); }
+  });
+}
+
+function raccogliDati(){
+  var certSel=document.querySelector('input[name="certPossesso"]:checked');
+  if(FLUSSO==='P') return {
+    flusso:'P', tipoAttivita:TIPO_ATTIVITA||'ritmica',
+    nomeAtleta:g('pNomeAtleta'), cognomeAtleta:g('pCognomeAtleta'),
+    cfAtleta:g('pCfAtleta').toUpperCase(), dataNascitaAtleta:dt('pDataNascitaAtleta'),
+    cittaNascitaAtleta:g('pCittaNascitaAtleta'), provNascitaAtleta:g('pProvNascitaAtleta'),
+    nazioneNascitaAtleta:g('pNazioneNascitaAtleta')||'Italia',
+    nomeGenitore:g('pNomeGenitore'), cognomeGenitore:g('pCognomeGenitore'),
+    cfGenitore:g('pCfGenitore').toUpperCase(), dataNascitaGenitore:dt('pDataNascitaGenitore'),
+    cittaNascitaGenitore:g('pCittaNascitaGenitore'), provNascitaGenitore:g('pProvNascitaGenitore'),
+    nazioneNascitaGenitore:g('pNazioneNascitaGenitore')||'Italia',
+    emailGenitore:g('pEmail'), telefonoGenitore:g('pTelefono'),
+    corso:DA_VALUTARE_P?'DA VALUTARE ('+(SEDE_PREF||'')+(TIPO_ATTIVITA==='fitness'?' Fitness':')'):CORSO_P_AUTO||g('corso'),
+    sportPregressa:SPORT_PREGRESSA||'no', sedePref:SEDE_PREF||'',
+    daValutare:DA_VALUTARE_P, giorniPreferiti:'',
+    consensoPrivacy:document.getElementById('consensoPrivacy').checked?'Si':'No',
+    consensoFoto1:(document.querySelector('input[name="consensoFoto1"]:checked')||{}).value||'No',
+    consensoFoto2:(document.querySelector('input[name="consensoFoto2"]:checked')||{}).value||'No',
+    consensoMarketing:(document.querySelector('input[name="consensoMarketing"]:checked')||{}).value||'No',
+  };
+
+  var nomeGen=MAGGIORENNE?g('nomeAtleta'):g('nomeGenitore');
+  var cognGen=MAGGIORENNE?g('cognomeAtleta'):g('cognomeGenitore');
+  var cfGen=MAGGIORENNE?g('cfAtleta').toUpperCase():g('cfGenitore').toUpperCase();
+  var ciGen=MAGGIORENNE?(g('ciAtleta')||''):(g('ciGenitore')||'');
+  var dtNascGen=MAGGIORENNE?dt('dataNascitaAtleta'):dt('dataNascitaGenitore');
+  var cittaNGen=MAGGIORENNE?g('cittaNascitaAtleta'):g('cittaNascitaGenitore');
+  var provNGen=MAGGIORENNE?g('provNascitaAtleta').toUpperCase():g('provNascitaGenitore').toUpperCase();
+  var nazNGen=MAGGIORENNE?g('nazioneNascitaAtleta'):g('nazioneNascitaGenitore');
+  var cittaRGen=MAGGIORENNE?g('cittaResidenzaAtleta'):g('cittaResidenzaGenitore');
+  var provRGen=MAGGIORENNE?g('provResidenzaAtleta').toUpperCase():g('provResidenzaGenitore').toUpperCase();
+  var capGen=MAGGIORENNE?g('capAtleta'):g('capGenitore');
+  var viaGen=MAGGIORENNE?g('viaAtleta'):g('viaGenitore');
+  var civGen=MAGGIORENNE?g('civicoAtleta'):g('civicoGenitore');
+  var emailGen=MAGGIORENNE?g('emailAtleta'):g('emailGenitore_s2');
+  var telGen=MAGGIORENNE?g('telefonoAtleta'):g('telefonoGenitore_s2');
+
+  return {
+    flusso:FLUSSO, maggiorenne:MAGGIORENNE, tipoAttivita:TIPO_ATTIVITA||'ritmica',
+    nomeAtleta:g('nomeAtleta'), cognomeAtleta:g('cognomeAtleta'),
+    cfAtleta:g('cfAtleta').toUpperCase(), ciAtleta:g('ciAtleta')||'',
+    dataNascitaAtleta:dt('dataNascitaAtleta'),
+    cittaNascitaAtleta:g('cittaNascitaAtleta'), provNascitaAtleta:g('provNascitaAtleta').toUpperCase(), nazioneNascitaAtleta:g('nazioneNascitaAtleta'),
+    cittaResidenzaAtleta:g('cittaResidenzaAtleta'), provResidenzaAtleta:g('provResidenzaAtleta').toUpperCase(), capAtleta:g('capAtleta'), viaAtleta:g('viaAtleta'), civicoAtleta:g('civicoAtleta'),
+    nomeGenitore:nomeGen, cognomeGenitore:cognGen, cfGenitore:cfGen, ciGenitore:ciGen,
+    dataNascitaGenitore:dtNascGen, cittaNascitaGenitore:cittaNGen, provNascitaGenitore:provNGen, nazioneNascitaGenitore:nazNGen,
+    cittaResidenzaGenitore:cittaRGen, provResidenzaGenitore:provRGen, capGenitore:capGen, viaGenitore:viaGen, civicoGenitore:civGen,
+    emailGenitore:emailGen, telefonoGenitore:telGen,
+    corso:g('corso'),
+    certPossesso:FLUSSO==='B'?(ATLETA&&(ATLETA.statoCert==='ok'||ATLETA.statoCert==='in_scadenza')?'si':'no'):(certSel?certSel.value:'no'),
+    certScadenza:FLUSSO==='B'?(ATLETA?ATLETA.scadenzaCert:''):(certSel&&certSel.value==='si'?dt('certScadenza'):''),
+    consensoPrivacy:document.getElementById('consensoPrivacy').checked?'Si':'No',
+    consensoFoto1:(document.querySelector('input[name="consensoFoto1"]:checked')||{}).value||'No',
+    consensoFoto2:(document.querySelector('input[name="consensoFoto2"]:checked')||{}).value||'No',
+    consensoMarketing:(document.querySelector('input[name="consensoMarketing"]:checked')||{}).value||'No',
+  };
+}
+
+// ============================================================
+// CONFERMA
+// ============================================================
+function mostraConfermaIscrizione(){
+  vai('sConferma'); nascondiProgress();
+  mostra('quoteSection'); mostra('bonificoSection'); mostra('uploadSection');
+  document.getElementById('confermaTitle').textContent='Pre-iscrizione inviata!';
+  document.getElementById('msgConferma').innerHTML='Pre-iscrizione di <strong>'+DATI.nomeAtleta+' '+DATI.cognomeAtleta+'</strong> al corso <strong>'+DATI.corso+'</strong> ricevuta.<br>Controlla la tua email a <strong>'+DATI.emailGenitore+'</strong>.';
+  var q=QUOTE_DATA[DATI.corso]; var html='';
+  if(q&&q.categoria==='Adulti'){
+    html='<div class="alert alert-info">Le quote per questo corso ti verranno comunicate dalla segreteria via email.</div>';
+  } else if(q&&q.unica){
+    html='<div class="quote-box"><h3>'+DATI.corso+'</h3>';
+    html+='<div class="quote-row"><span>Quota intera</span><strong>'+q.unica+' €</strong></div>';
+    if(q.nrate>0){
+      html+='<div style="font-size:.74rem;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin:8px 0 4px">oppure in '+q.nrate+' rate:</div>';
+      q.rate.forEach(function(r){ html+='<div class="quote-row"><span>'+r.l+'</span><span>'+r.v+' €</span></div>'; });
+    }
+    html+='</div>';
+  } else {
+    html='<div class="alert alert-info">La quota verrà comunicata dalla segreteria.</div>';
+  }
+  document.getElementById('quoteConferma').innerHTML=html;
+  var causale=DATI.cognomeAtleta+' '+DATI.nomeAtleta+' - Iscrizione '+DATI.corso+' '+STAGIONE;
+  document.getElementById('valCausale').textContent=causale;
+  document.getElementById('cpInt').onclick=function(){ copia('valInt',this); };
+  document.getElementById('cpIban').onclick=function(){ copia('valIban',this); };
+  document.getElementById('cpCausale').onclick=function(){ copia('valCausale',this); };
+}
+
+function mostraConfermaProva(){
+  vai('sConferma'); nascondiProgress();
+  nascondi('quoteSection'); nascondi('bonificoSection'); nascondi('uploadSection');
+  document.getElementById('confermaTitle').textContent='Richiesta inviata!';
+  var nomeCompleto=DATI.nomeAtleta+' '+DATI.cognomeAtleta;
+  var msg=DA_VALUTARE_P
+    ?'Richiesta per <strong>'+nomeCompleto+'</strong> ricevuta.<br><br>La segreteria ti contatterà per valutare il corso più adatto e confermare data e orario della lezione di prova.'
+    :'Richiesta di lezione di prova per <strong>'+nomeCompleto+'</strong> ricevuta.<br><br>Riceverai la <strong>Dichiarazione di Assunzione di Responsabilità</strong> via email a <strong>'+DATI.emailGenitore+'</strong>: stampala, firmala e portala il giorno della lezione.<br><br>La segreteria ti contatterà per confermare data e orario.';
+  if(!DA_VALUTARE_P&&DATI.corso){
+    msg+='<br><span style="font-size:.83rem;color:#666">Corso assegnato: <strong>'+DATI.corso+'</strong></span>';
+  }
+  document.getElementById('msgConferma').innerHTML=msg;
+}
+
+// ============================================================
+// UPLOAD RICEVUTA
+// ============================================================
+function caricaRicevuta(){
+  var file=document.getElementById('fileRicevuta').files[0];
+  if(!file){ alert('Seleziona un file.'); return; }
+  if(file.size>MAX_MB*1024*1024){ alert('File troppo grande. Massimo '+MAX_MB+'MB.'); return; }
+  var btn=document.getElementById('btnCarica'); btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Caricamento...';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    chiamaBackend('salvaRicevuta',{
+      base64:e.target.result.split(',')[1], nomeFile:file.name,
+      cognomeAtleta:DATI?DATI.cognomeAtleta:'', nomeAtleta:DATI?DATI.nomeAtleta:'',
+      corso:DATI?DATI.corso:'', cfAtleta:DATI?DATI.cfAtleta:'',
+    },function(err,r){
+      btn.disabled=false; btn.textContent='Carica ricevuta';
+      document.getElementById('uploadEsito').innerHTML=(err||!r||!r.successo)
+        ?'<div class="alert alert-danger" style="margin-top:12px">Errore: '+(r&&r.errore?r.errore:'connessione')+'</div>'
+        :'<div class="alert alert-ok" style="margin-top:12px">✔ Ricevuta caricata. Grazie!</div>';
+      if(r&&r.successo) btn.style.display='none';
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
+// UPLOAD DIRETTO DA LINK EMAIL
+// ============================================================
+function modalitaUploadDiretto(cf){
+  STEPS.forEach(function(s){ var e=document.getElementById(s); if(e) e.classList.add('hidden'); });
+  nascondiProgress();
+  mostra('sUploadDiretto');
+  var infoEl=document.getElementById('uploadDirettoInfo');
+  infoEl.className='alert alert-info'; infoEl.textContent='Ricerca in corso...';
+  chiamaBackend('cercaIscrizioneDaCF',{cf:cf},function(err,r){
+    if(err||!r||!r.trovato){ infoEl.className='alert alert-danger'; infoEl.textContent='Iscrizione non trovata. Contatta la segreteria.'; return; }
+    DATI={cognomeAtleta:r.cognomeAtleta, nomeAtleta:r.nomeAtleta, corso:r.corsoAttuale, cfAtleta:cf};
+    document.getElementById('uploadDirettoCard').innerHTML=
+      '<div class="step-title">📎 Carica la ricevuta del bonifico</div>'+
+      '<div class="atleta-card" style="margin-bottom:12px"><div class="nome">'+r.nomeAtleta+' '+r.cognomeAtleta+'</div><div class="det">Corso: <strong>'+r.corsoAttuale+'</strong></div></div>'+
+      '<p style="font-size:.84rem;color:#666;margin-bottom:12px">Carica la ricevuta del bonifico. PDF, JPG o PNG — max '+MAX_MB+'MB.</p>'+
+      '<div class="upload-area" id="uaD"><p>📎 Trascina il file o clicca per selezionarlo<br><small>PDF, JPG, PNG — max '+MAX_MB+'MB</small></p>'+
+      '<input type="file" id="filUD" accept=".pdf,.jpg,.jpeg,.png" style="display:none">'+
+      '<button class="btn-full" id="sfUD" style="width:auto;padding:10px 24px;margin-top:4px">Sfoglia file</button></div>'+
+      '<div id="nomeUD" style="font-size:.84rem;color:#2e7d32;margin-top:8px;display:none"></div>'+
+      '<button class="btn-full" id="caricaUD" style="display:none;margin-top:12px">Carica ricevuta</button>'+
+      '<div id="esitoUD"></div>';
+    document.getElementById('sfUD').onclick=function(){ document.getElementById('filUD').click(); };
+    document.getElementById('filUD').onchange=function(){
+      if(this.files[0]){ document.getElementById('nomeUD').textContent='✔ '+this.files[0].name; document.getElementById('nomeUD').style.display='block'; document.getElementById('caricaUD').style.display='block'; }
+    };
+    document.getElementById('caricaUD').onclick=function(){
+      var f=document.getElementById('filUD').files[0]; if(!f){ alert('Seleziona un file.'); return; }
+      if(f.size>MAX_MB*1024*1024){ alert('Max '+MAX_MB+'MB.'); return; }
+      var b=document.getElementById('caricaUD'); b.disabled=true; b.innerHTML='<span class="spinner"></span>Caricamento...';
+      var rd=new FileReader();
+      rd.onload=function(ev){
+        chiamaBackend('salvaRicevuta',{
+          base64:ev.target.result.split(',')[1], nomeFile:f.name,
+          cognomeAtleta:r.cognomeAtleta, nomeAtleta:r.nomeAtleta, corso:r.corsoAttuale, cfAtleta:cf,
+        },function(err2,res){
+          b.disabled=false; b.textContent='Carica ricevuta';
+          document.getElementById('esitoUD').innerHTML=(err2||!res||!res.successo)
+            ?'<div class="alert alert-danger" style="margin-top:12px">Errore: '+(res&&res.errore?res.errore:'connessione')+'</div>'
+            :'<div class="alert alert-ok" style="margin-top:12px">✔ Ricevuta caricata. Grazie!</div>';
+          if(res&&res.successo) b.style.display='none';
+        });
+      };
+      rd.readAsDataURL(f);
+    };
+  });
+}
+
+// ============================================================
+// COPIA TESTO
+// ============================================================
+function copia(elId,btn){
+  var txt=document.getElementById(elId).textContent.trim();
+  if(elId==='valIban') txt=txt.replace(/\s/g,'');
+  var orig=btn.textContent;
+  function ok(){ btn.textContent='✓ Copiato'; btn.classList.add('ok'); setTimeout(function(){ btn.textContent=orig; btn.classList.remove('ok'); },2000); }
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(ok).catch(function(){ fb(txt,ok); }); } else { fb(txt,ok); }
+}
+function fb(txt,cb){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb(); }
+
+// Avvio
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
+</script>
+</body>
+</html>
