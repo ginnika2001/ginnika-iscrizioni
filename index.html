@@ -193,9 +193,22 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
     <div class="field-group"><label>Prov.*</label><input type="text" id="pProvNascitaAtleta" maxlength="3" placeholder="MI"></div>
     <div class="field-group"><label>Nazione *</label><input type="text" id="pNazioneNascitaAtleta" placeholder="Italia"></div>
   </div>
+
+  <!-- Contatti maggiorenne — visibili solo se CF >= 18 anni (flusso P) -->
+  <div id="contattiMaggiorenneS1p" class="hidden">
+    <div class="alert alert-warn" style="margin-top:16px;font-size:.83rem;line-height:1.6">
+      <strong>&#9888;&#65039; Attenzione &mdash; dati fiscali</strong><br>
+      Questi dati verranno associati alla ricevuta di pagamento e potranno essere utilizzati per la <strong>detrazione fiscale 730</strong>. Inseriscili con cura.
+    </div>
+    <div class="grid-2" style="margin-top:10px">
+      <div class="field-group"><label>Email *</label><input type="email" id="pEmailMag" placeholder="maria.rossi@email.it"></div>
+      <div class="field-group"><label>Cellulare *</label><input type="tel" id="pTelefonoMag" placeholder="+39 333 1234567"></div>
+    </div>
+  </div>
+
   <div class="nav-buttons">
-    <button class="btn-back" id="btnBack1p">← Indietro</button>
-    <button class="btn-next" id="btnNext1p">Avanti →</button>
+    <button class="btn-back" id="btnBack1p">&#8592; Indietro</button>
+    <button class="btn-next" id="btnNext1p">Avanti &#8594;</button>
   </div>
 </div>
 </div>
@@ -797,10 +810,31 @@ function init() {
 
   // S1P
   document.getElementById('btnBack1p').onclick = function(){ vai('s_tipo'); nascondiProgress(); };
+
+  // Mostra contatti se atleta P è maggiorenne
+  document.getElementById('pCfAtleta').onchange = function(){
+    var cf=this.value.trim().toUpperCase(); this.value=cf;
+    if(cf.length===16){
+      if(isMaggiorenne(cf)){ mostra('contattiMaggiorenneS1p'); }
+      else { nascondi('contattiMaggiorenneS1p'); }
+    }
+  };
+
   document.getElementById('btnNext1p').onclick = function(){
-    if(ok(['pNomeAtleta','pCognomeAtleta','pCfAtleta','pDataNascitaAtleta','pCittaNascitaAtleta'])){
-      if(TIPO_ATTIVITA==='fitness'){ vai('s_fitness_contatti'); progress(2); }
-      else { vai('s2p'); progress(2); }
+    var cfP=document.getElementById('pCfAtleta').value.trim().toUpperCase();
+    var magP=isMaggiorenne(cfP);
+    var campiP=['pNomeAtleta','pCognomeAtleta','pCfAtleta','pDataNascitaAtleta','pCittaNascitaAtleta'];
+    if(magP) campiP.push('pEmailMag','pTelefonoMag');
+    if(ok(campiP)){
+      if(TIPO_ATTIVITA==='fitness'){
+        // Fitness: maggiorenne salta s2p e s_fitness_contatti
+        if(magP){ aggiornaSelectPerFitness(); vai('s3'); progress(3); }
+        else { vai('s_fitness_contatti'); progress(2); }
+      } else {
+        // Ritmica: maggiorenne salta s2p e va al questionario esperienza
+        if(magP){ vai('s_sport'); progress(2); }
+        else { vai('s2p'); progress(2); }
+      }
     }
   };
 
@@ -950,9 +984,17 @@ function init() {
   document.getElementById('corso').onchange = function(){ aggiornaAlertCert(); };
   document.getElementById('btnBack3').onclick = function(){
     if(FLUSSO==='P'){
-      if(TIPO_ATTIVITA==='fitness'){ vai('s_fitness_contatti'); progress(2); }
-      else { vai('s_sede'); progress(3); }
-    } else if(MAGGIORENNE){ vai('s1mag'); progress(2); }
+      var cfP=document.getElementById('pCfAtleta').value.trim().toUpperCase();
+      var magP=isMaggiorenne(cfP);
+      if(TIPO_ATTIVITA==='fitness'){
+        // Fitness maggiorenne: torna a s1p (senza passare per s_fitness_contatti)
+        if(magP){ vai('s1p'); progress(1); }
+        else { vai('s_fitness_contatti'); progress(2); }
+      } else {
+        // Ritmica: torna a s_sede (maggiorenne o minorenne uguale)
+        vai('s_sede'); progress(3);
+      }
+    } else if(MAGGIORENNE){ vai('s1'); progress(1); }  // maggiorenne: salta s1mag
     else{ vai('s2'); progress(2); }
   };
   document.getElementById('btnNext3').onclick = function(){
@@ -1325,15 +1367,16 @@ function raccogliDati(){
     cfAtleta:g('pCfAtleta').toUpperCase(), dataNascitaAtleta:dt('pDataNascitaAtleta'),
     cittaNascitaAtleta:g('pCittaNascitaAtleta'), provNascitaAtleta:g('pProvNascitaAtleta'),
     nazioneNascitaAtleta:g('pNazioneNascitaAtleta')||'Italia',
-    nomeGenitore:TIPO_ATTIVITA==='fitness'?g('pNomeAtleta'):g('pNomeGenitore'),
-    cognomeGenitore:TIPO_ATTIVITA==='fitness'?g('pCognomeAtleta'):g('pCognomeGenitore'),
-    cfGenitore:TIPO_ATTIVITA==='fitness'?g('pCfAtleta').toUpperCase():g('pCfGenitore').toUpperCase(),
-    dataNascitaGenitore:TIPO_ATTIVITA==='fitness'?dt('pDataNascitaAtleta'):dt('pDataNascitaGenitore'),
-    cittaNascitaGenitore:TIPO_ATTIVITA==='fitness'?g('pCittaNascitaAtleta'):g('pCittaNascitaGenitore'),
-    provNascitaGenitore:TIPO_ATTIVITA==='fitness'?g('pProvNascitaAtleta'):g('pProvNascitaGenitore'),
-    nazioneNascitaGenitore:TIPO_ATTIVITA==='fitness'?(g('pNazioneNascitaAtleta')||'Italia'):(g('pNazioneNascitaGenitore')||'Italia'),
-    emailGenitore:TIPO_ATTIVITA==='fitness'?g('fitnessEmail'):g('pEmail'),
-    telefonoGenitore:TIPO_ATTIVITA==='fitness'?g('fitnessTelefono'):g('pTelefono'),
+    // P maggiorenne: genitore = atleta stessa
+    nomeGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pNomeAtleta'):g('pNomeGenitore'),
+    cognomeGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pCognomeAtleta'):g('pCognomeGenitore'),
+    cfGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pCfAtleta').toUpperCase():g('pCfGenitore').toUpperCase(),
+    dataNascitaGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?dt('pDataNascitaAtleta'):dt('pDataNascitaGenitore'),
+    cittaNascitaGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pCittaNascitaAtleta'):g('pCittaNascitaGenitore'),
+    provNascitaGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pProvNascitaAtleta'):g('pProvNascitaGenitore'),
+    nazioneNascitaGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?(g('pNazioneNascitaAtleta')||'Italia'):(g('pNazioneNascitaGenitore')||'Italia'),
+    emailGenitore:(TIPO_ATTIVITA==='fitness')?g('fitnessEmail'):(isMaggiorenne(g('pCfAtleta').toUpperCase())?g('pEmailMag'):g('pEmail')),
+    telefonoGenitore:(TIPO_ATTIVITA==='fitness')?g('fitnessTelefono'):(isMaggiorenne(g('pCfAtleta').toUpperCase())?g('pTelefonoMag'):g('pTelefono')),
     corso:DA_VALUTARE_P?'DA VALUTARE ('+(SEDE_PREF||'')+(TIPO_ATTIVITA==='fitness'?' Fitness':')'):CORSO_P_AUTO||g('corso'),
     sportPregressa:SPORT_PREGRESSA||'no', sedePref:SEDE_PREF||'',
     daValutare:DA_VALUTARE_P, giorniPreferiti:'',
