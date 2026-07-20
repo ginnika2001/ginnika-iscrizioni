@@ -116,6 +116,10 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 
 <div class="header">
+  <div style="display:flex;justify-content:flex-end;padding:0 0 8px">
+    <button id="btnLangIT" onclick="setLingua('it')" style="background:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:700;cursor:pointer;margin-right:4px">&#127470;&#127481; IT</button>
+    <button id="btnLangEN" onclick="setLingua('en')" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:700;cursor:pointer">&#127468;&#127463; EN</button>
+  </div>
   <h1>Ginnika 2001</h1>
   <p id="headerSub"></p>
 </div>
@@ -134,7 +138,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 <!-- S0 — scelta flusso -->
 <div class="page" id="s0">
 <div class="card">
-  <div class="step-title">Benvenuta! Come vuoi procedere?</div>
+  <div class="step-title">Benvenuto/a! Come vuoi procedere?</div>
   <div class="alert alert-info" style="margin-bottom:16px">La pre-iscrizione genera un modulo precompilato via email. L'iscrizione è ufficiale solo dopo aver consegnato il modulo firmato e la copia di pagamento in palestra.</div>
   <div class="choice-grid-3">
     <button class="btn-choice" id="btnP"><span class="icon">⭐</span>Lezione di prova<br><small style="font-weight:400">2 lezioni gratuite</small></button>
@@ -221,6 +225,22 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   <div class="nav-buttons">
     <button class="btn-back" id="btnBack2p">← Indietro</button>
     <button class="btn-next" id="btnNext2p">Avanti →</button>
+  </div>
+</div>
+</div>
+
+
+<!-- S_FITNESS_CONTATTI — email e cellulare atleta (flusso P fitness) -->
+<div class="page hidden" id="s_fitness_contatti">
+<div class="card">
+  <div class="step-title">Contatti dell'atleta</div>
+  <div class="grid-2">
+    <div class="field-group"><label>Email *</label><input type="email" id="fitnessEmail" placeholder="mario.rossi@email.it"></div>
+    <div class="field-group"><label>Cellulare *</label><input type="tel" id="fitnessTelefono" placeholder="+39 333 1234567"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-back" id="btnBackFitnessContatti">← Indietro</button>
+    <button class="btn-next" id="btnNextFitnessContatti">Avanti →</button>
   </div>
 </div>
 </div>
@@ -444,7 +464,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
       <div class="alert alert-info" style="font-size:.82rem;margin-top:0">Porta copia del certificato in palestra al primo allenamento.</div>
     </div>
     <div id="certNoBox" class="hidden">
-      <div class="alert alert-warn" style="font-size:.82rem;margin-top:0">Nessun problema. Riceverai il modulo di richiesta dalla segreteria dopo il pagamento della prima rata.</div>
+      <div class="alert alert-warn" style="font-size:.82rem;margin-top:0">Nessun problema. Se hai necessità di certificato agonistico, riceverai il modulo di richiesta dalla segreteria dopo il pagamento della prima rata. Se invece hai necessità di certificato non agonistico, puoi procedere in autonomia con il tuo pediatra o medico di base.</div>
     </div>
   </div>
   <div id="s3bRinnovo" class="hidden"><div id="s3bRinnovoMsg"></div></div>
@@ -555,7 +575,13 @@ var FLUSSO=null, ATLETA=null, DATI=null, MAGGIORENNE=false;
 var TIPO_ATTIVITA=null, SPORT_PREGRESSA=null, ANNI_PRATICA=null;
 var SEDE_PREF=null, CORSO_P_AUTO=null, DA_VALUTARE_P=false;
 
-var STEPS=['s0','sB','s_tipo','s1p','s2p','s_sport','s_sede','s1','s1mag','s2','s3','s3b','s4','sConferma','sUploadDiretto'];
+var LINGUA='it';
+function setLingua(l){
+  LINGUA=l;
+  document.getElementById('btnLangIT').style.background=l==='it'?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.15)';
+  document.getElementById('btnLangEN').style.background=l==='en'?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.15)';
+}
+var STEPS=['s0','sB','s_tipo','s1p','s2p','s_fitness_contatti','s_sport','s_sede','s1','s1mag','s2','s3','s3b','s4','sConferma','sUploadDiretto'];
 
 // ============================================================
 // CHIAMATA AL BACKEND — fetch con CORS
@@ -646,14 +672,22 @@ function init() {
   document.getElementById('btnNext2p').onclick = function(){
     if(ok(['pNomeGenitore','pCognomeGenitore','pCfGenitore','pDataNascitaGenitore','pCittaNascitaGenitore','pEmail','pTelefono'])){
       if(TIPO_ATTIVITA==='fitness'){
-        // Fitness: vai direttamente a scelta corso adulti
-        aggiornaSelectPerFitness();
-        document.getElementById('noteCorso').textContent = 'Le quote per questo corso ti verranno comunicate dalla segreteria via email.';
-        vai('s3'); progress(3);
+        // Fitness: vai a raccolta contatti atleta
+        vai('s_fitness_contatti'); progress(3);
       } else {
         // Ritmica: vai al questionario esperienza
         vai('s_sport'); progress(3);
       }
+    }
+  };
+
+  // S_FITNESS_CONTATTI
+  document.getElementById('btnBackFitnessContatti').onclick = function(){ vai('s2p'); progress(2); };
+  document.getElementById('btnNextFitnessContatti').onclick = function(){
+    if(ok(['fitnessEmail','fitnessTelefono'])){
+      aggiornaSelectPerFitness();
+      document.getElementById('noteCorso').textContent = 'Le quote per questo corso ti verranno comunicate dalla segreteria via email.';
+      vai('s3'); progress(3);
     }
   };
 
@@ -899,7 +933,7 @@ function aggiornaAlertCert() {
   var richiedeCert='no';
   for(var i=0;i<CORSI_DATA.length;i++){ if(CORSI_DATA[i].nome===corso){ richiedeCert=CORSI_DATA[i].richiedeCert||'no'; break; } }
   if(richiedeCert==='no')                { box.className='alert alert-ok';   box.innerHTML='🟢 <strong>Nessun certificato medico richiesto</strong> per questo corso.'; }
-  else if(richiedeCert==='non_agonistico'){ box.className='alert alert-info'; box.innerHTML='🔵 <strong>Certificato medico per attività sportiva non agonistica</strong>, rilasciabile dal pediatra di base.'; }
+  else if(richiedeCert==='non_agonistico'){ box.className='alert alert-info'; box.innerHTML='🔵 <strong>Certificato medico per attività sportiva non agonistica</strong>, rilasciabile dal pediatra o medico di base.'; }
   else                                    { box.className='alert alert-warn'; box.innerHTML='🟡 <strong>Certificato medico per attività sportiva agonistica</strong>. La società ti invierà il modulo di richiesta dopo il pagamento della prima rata.'; }
   box.classList.remove('hidden');
 }
@@ -1089,11 +1123,16 @@ function raccogliDati(){
     cfAtleta:g('pCfAtleta').toUpperCase(), dataNascitaAtleta:dt('pDataNascitaAtleta'),
     cittaNascitaAtleta:g('pCittaNascitaAtleta'), provNascitaAtleta:g('pProvNascitaAtleta'),
     nazioneNascitaAtleta:g('pNazioneNascitaAtleta')||'Italia',
-    nomeGenitore:g('pNomeGenitore'), cognomeGenitore:g('pCognomeGenitore'),
-    cfGenitore:g('pCfGenitore').toUpperCase(), dataNascitaGenitore:dt('pDataNascitaGenitore'),
-    cittaNascitaGenitore:g('pCittaNascitaGenitore'), provNascitaGenitore:g('pProvNascitaGenitore'),
-    nazioneNascitaGenitore:g('pNazioneNascitaGenitore')||'Italia',
-    emailGenitore:g('pEmail'), telefonoGenitore:g('pTelefono'),
+    // Fitness: usa dati atleta come genitore (sempre maggiorenne)
+    nomeGenitore:TIPO_ATTIVITA==='fitness'?g('pNomeAtleta'):g('pNomeGenitore'),
+    cognomeGenitore:TIPO_ATTIVITA==='fitness'?g('pCognomeAtleta'):g('pCognomeGenitore'),
+    cfGenitore:TIPO_ATTIVITA==='fitness'?g('pCfAtleta').toUpperCase():g('pCfGenitore').toUpperCase(),
+    dataNascitaGenitore:TIPO_ATTIVITA==='fitness'?dt('pDataNascitaAtleta'):dt('pDataNascitaGenitore'),
+    cittaNascitaGenitore:TIPO_ATTIVITA==='fitness'?g('pCittaNascitaAtleta'):g('pCittaNascitaGenitore'),
+    provNascitaGenitore:TIPO_ATTIVITA==='fitness'?g('pProvNascitaAtleta'):g('pProvNascitaGenitore'),
+    nazioneNascitaGenitore:TIPO_ATTIVITA==='fitness'?(g('pNazioneNascitaAtleta')||'Italia'):(g('pNazioneNascitaGenitore')||'Italia'),
+    emailGenitore:TIPO_ATTIVITA==='fitness'?g('fitnessEmail'):g('pEmail'),
+    telefonoGenitore:TIPO_ATTIVITA==='fitness'?g('fitnessTelefono'):g('pTelefono'),
     corso:DA_VALUTARE_P?'DA VALUTARE ('+(SEDE_PREF||'')+(TIPO_ATTIVITA==='fitness'?' Fitness':')'):CORSO_P_AUTO||g('corso'),
     sportPregressa:SPORT_PREGRESSA||'no', sedePref:SEDE_PREF||'',
     daValutare:DA_VALUTARE_P, giorniPreferiti:'',
