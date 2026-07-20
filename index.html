@@ -580,13 +580,20 @@ var STEPS=['s0','sB','s_tipo','s1p','s2p','s_fitness_contatti','s_sport','s_sede
 // CHIAMATA AL BACKEND — fetch con CORS
 // ============================================================
 function chiamaBackend(azione, dati, callback) {
-  fetch(BACKEND_URL, {
-    method: 'POST',
-    body: JSON.stringify({ azione: azione, dati: dati }),
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){ callback(null, data); })
-  .catch(function(err){ callback(err, null); });
+  var payload = encodeURIComponent(JSON.stringify(dati || {}));
+  var url = BACKEND_URL + '?azione=' + encodeURIComponent(azione) + '&payload=' + payload;
+  console.log('chiamaBackend:', azione);
+  fetch(url, { redirect: 'follow' })
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(function(testo){
+      console.log('Risposta:', testo.substring(0,200));
+      try { callback(null, JSON.parse(testo)); }
+      catch(e) { callback(new Error('Risposta non valida: ' + testo.substring(0,100)), null); }
+    })
+    .catch(function(err){ console.error('Errore:', err.message); callback(err, null); });
 }
 
 // ============================================================
@@ -668,8 +675,8 @@ var LANG = {
     alertBaby: '\ud83d\udfe2 <strong>Nessun certificato medico richiesto</strong> per questo corso.',
     alertNonAgo: '\ud83d\udd35 <strong>Certificato medico per attività sportiva non agonistica</strong>, rilasciabile dal pediatra o medico di base.',
     alertAgo: '\ud83d\udfe1 <strong>Certificato medico per attività sportiva agonistica</strong>. La società ti invierà il modulo di richiesta dopo il pagamento della prima rata.',
-    certScad: '\u274c Certificato <strong>scaduto il {data}</strong>. Rinnova prima di riprendere gli allenamenti.',
-    certInScad: '\u26a0\ufe0f Certificato in scadenza il <strong>{data}</strong>. Consigliamo di rinnovarlo prima dell\'inizio della stagione.',
+    certScad: '\u274c Il certificato medico \u00e8 scaduto il <strong>{data}</strong>. Rinnovalo prima dell\u2019inizio delle lezioni.',
+    certInScad: '\u26a0\ufe0f Il certificato medico scade il <strong>{data}</strong>. Ti consigliamo di rinnovarlo prima dell\u2019inizio delle lezioni.',
     certOk: '\u2705 Certificato valido fino al <strong>{data}</strong>. Porta copia in palestra al primo allenamento.',
     certAssente: '\u26a0\ufe0f Nessun certificato registrato. Contatta la segreteria: <strong>info@ginnika2001.com</strong>',
     cfNotFound: '\u26a0\ufe0f Codice fiscale non trovato. Controlla oppure procedi come nuova iscrizione.',
@@ -692,8 +699,8 @@ var LANG = {
     alertBaby: '\ud83d\udfe2 <strong>No medical certificate required</strong> for this course.',
     alertNonAgo: '\ud83d\udd35 <strong>Non-competitive sports medical certificate</strong>, available from your GP or family doctor.',
     alertAgo: '\ud83d\udfe1 <strong>Competitive sports medical certificate</strong>. The club will send the request form after payment of the first instalment.',
-    certScad: '\u274c Certificate <strong>expired on {data}</strong>. Please renew before returning to training.',
-    certInScad: '\u26a0\ufe0f Certificate expiring on <strong>{data}</strong>. We recommend renewing before the season starts.',
+    certScad: '\u274c The medical certificate expired on <strong>{data}</strong>. Please renew it before training sessions begin.',
+    certInScad: '\u26a0\ufe0f The medical certificate expires on <strong>{data}</strong>. We recommend renewing it before the season starts.',
     certOk: '\u2705 Certificate valid until <strong>{data}</strong>. Bring a copy to the gym on your first training day.',
     certAssente: '\u26a0\ufe0f No certificate on record. Contact: <strong>info@ginnika2001.com</strong>',
     cfNotFound: '\u26a0\ufe0f Tax code not found. Please check and try again.',
@@ -885,7 +892,12 @@ function init() {
   };
   document.getElementById('cfAtleta').onchange = function(){
     var cf=this.value.trim().toUpperCase();
-    if(cf.length===16){ var eta=calcolaEtaDaCF(cf); (eta!==null&&eta>=13)?mostra('notaFirma'):nascondi('notaFirma'); }
+    this.value=cf;
+    if(cf.length===16){
+      var eta=calcolaEtaDaCF(cf); (eta!==null&&eta>=13)?mostra('notaFirma'):nascondi('notaFirma');
+      if(!validaCF(cf)){ this.classList.add('errore'); this.title='Codice fiscale non valido'; }
+      else { this.classList.remove('errore'); this.title=''; }
+    }
   };
 
   // S1mag
@@ -923,10 +935,34 @@ function init() {
     if(FLUSSO==='B'){
       mostra('s3bRinnovo'); nascondi('s3bNuova');
       var stato=ATLETA?ATLETA.statoCert:'assente', scad=ATLETA?ATLETA.scadenzaCert:'';
-      var msg=stato==='scaduto'?'<div class="alert alert-danger">❌ Certificato <strong>scaduto il '+scad+'</strong>. Rinnova prima di riprendere gli allenamenti.</div>'
-        :stato==='in_scadenza'?'<div class="alert alert-warn">⚠️ Certificato in scadenza il <strong>'+scad+'</strong>. Consigliamo di rinnovarlo prima dell\'inizio della stagione.</div>'
-        :stato==='ok'?'<div class="alert alert-ok">✅ Certificato valido fino al <strong>'+scad+'</strong>. Porta copia in palestra al primo allenamento.</div>'
-        :'<div class="alert alert-warn">⚠️ Nessun certificato registrato. Contatta la segreteria: <strong>info@ginnika2001.com</strong></div>';
+
+      // Ricava tipo certificato dal corso selezionato
+      var richiedeCert='agonistico';
+      for(var ci=0;ci<CORSI_DATA.length;ci++){ if(CORSI_DATA[ci].nome===corsoSel){ richiedeCert=CORSI_DATA[ci].richiedeCert||'agonistico'; break; } }
+      var it = LINGUA==='it';
+
+      // Istruzione rinnovo specifica per tipo
+      var istruzioneRinnovo='';
+      if(richiedeCert==='non_agonistico'){
+        istruzioneRinnovo = it
+          ? ' Puoi rinnovarlo rivolgendoti al tuo pediatra o medico di base.'
+          : ' You can renew it with your GP or family doctor.';
+      } else if(richiedeCert==='agonistico'){
+        istruzioneRinnovo = it
+          ? ' Contatta la segreteria per richiedere il modulo della visita medica sportiva agonistica.'
+          : ' Contact the secretariat to request the competitive sports medical examination form.';
+      }
+
+      var msg;
+      if(stato==='scaduto'){
+        msg='<div class="alert alert-danger">'+(it?'\u274c Il certificato medico \u00e8 scaduto il <strong>'+scad+'</strong>. Rinnovalo prima dell\u2019inizio delle lezioni.':'\u274c The medical certificate expired on <strong>'+scad+'</strong>. Please renew it before training sessions begin.')+istruzioneRinnovo+'</div>';
+      } else if(stato==='in_scadenza'){
+        msg='<div class="alert alert-warn">'+(it?'\u26a0\ufe0f Il certificato medico scade il <strong>'+scad+'</strong>. Ti consigliamo di rinnovarlo prima dell\u2019inizio delle lezioni.':'\u26a0\ufe0f The medical certificate expires on <strong>'+scad+'</strong>. We recommend renewing it before the season starts.')+istruzioneRinnovo+'</div>';
+      } else if(stato==='ok'){
+        msg='<div class="alert alert-ok">'+(it?'\u2705 Certificato valido fino al <strong>'+scad+'</strong>. Porta copia in palestra al primo allenamento.':'\u2705 Certificate valid until <strong>'+scad+'</strong>. Bring a copy to the gym on your first training day.')+'</div>';
+      } else {
+        msg='<div class="alert alert-warn">'+(it?'\u26a0\ufe0f Nessun certificato registrato. Contatta la segreteria: <strong>info@ginnika2001.com</strong>':'\u26a0\ufe0f No certificate on record. Contact: <strong>info@ginnika2001.com</strong>')+'</div>';
+      }
       document.getElementById('s3bRinnovoMsg').innerHTML=msg;
       vai('s3b'); progress(3); return;
     }
@@ -981,6 +1017,19 @@ function init() {
 // ============================================================
 // ASSEGNAZIONE CORSO AUTOMATICA — Flusso P ritmica
 // ============================================================
+
+// Validazione CF lato client (stessa logica del server)
+function validaCF(cf) {
+  if (!cf || cf.length !== 16) return false;
+  cf = cf.toUpperCase();
+  if (!/^[A-Z0-9]+$/.test(cf)) return false;
+  var DISPARI = {'0':1,'1':0,'2':5,'3':7,'4':9,'5':13,'6':15,'7':17,'8':19,'9':21,'A':1,'B':0,'C':5,'D':7,'E':9,'F':13,'G':15,'H':17,'I':19,'J':21,'K':2,'L':4,'M':18,'N':20,'O':11,'P':3,'Q':6,'R':8,'S':12,'T':14,'U':16,'V':10,'W':22,'X':25,'Y':24,'Z':23};
+  var PARI = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,'Z':25};
+  var somma = 0;
+  for (var i=0; i<15; i++) { var c=cf.charAt(i); somma += (i%2===0) ? DISPARI[c] : PARI[c]; }
+  return cf.charAt(15) === String.fromCharCode(65 + (somma % 26));
+}
+
 function assegnaCorsoDaTabella(cfAtleta, sede, sportPregressa, anniPratica) {
   var cf=cfAtleta.toUpperCase();
   var aa=parseInt(cf.substring(6,8));
@@ -1152,6 +1201,7 @@ function dt(id){ var e=document.getElementById(id); if(!e||!e.value) return ''; 
 function cercaCF(){
   var cf=g('cfLookup').toUpperCase();
   if(cf.length!==16){ document.getElementById('lookupResult').innerHTML='<div class="alert alert-warn">Il codice fiscale deve essere di 16 caratteri.</div>'; return; }
+  if(!validaCF(cf)){ document.getElementById('lookupResult').innerHTML='<div class="alert alert-warn">Codice fiscale non valido. Controlla e riprova.</div>'; return; }
   var btn=document.getElementById('btnCerca'); btn.disabled=true; btn.textContent='Ricerca...';
   document.getElementById('lookupResult').innerHTML='<div class="alert alert-info">Ricerca in corso...</div>';
   chiamaBackend('cercaAtletaPerCF',{cf:cf},function(err,r){
@@ -1165,15 +1215,11 @@ function cercaCF(){
       return;
     }
     ATLETA=r;
-    var _s=r.scadenzaCert||'';
-    var cert=r.statoCert==='scaduto'?'<div class="alert alert-danger">'+t('certScad').replace('{data}',_s)+'</div>'
-      :r.statoCert==='in_scadenza'?'<div class="alert alert-warn">'+t('certInScad').replace('{data}',_s)+'</div>'
-      :r.statoCert==='ok'?'<div class="alert alert-ok">'+t('certOk').replace('{data}',_s)+'</div>'
-      :'<div class="alert alert-warn">'+t('certAssente')+'</div>';
+    // Stato certificato mostrato solo in S3b dopo la scelta del corso
     document.getElementById('lookupResult').innerHTML=
       '<div class="atleta-card"><div class="nome">'+r.nomeAtleta+' '+r.cognomeAtleta+'</div>'+
-      '<div class="det">Corso attuale: <strong>'+r.corsoAttuale+'</strong></div></div>'+cert+
-      '<button class="btn-full" id="btnProsegui" style="margin-top:8px">Continua con il rinnovo →</button>';
+      '<div class="det">Corso attuale: <strong>'+(r.corsoAttuale||'—')+'</strong></div></div>'+
+      '<button class="btn-full" id="btnProsegui" style="margin-top:8px">'+t('continua')+'</button>';
     document.getElementById('btnProsegui').onclick=function(){ popolaSelectCorsi(); precompila(); vai('s1'); progress(1); };
   });
 }
