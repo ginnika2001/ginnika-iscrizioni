@@ -711,7 +711,7 @@ var LANG = {
     ricercaCorso: 'Ricerca in corso...',
     quoteAdulti: 'Le quote per questo corso ti verranno comunicate dalla segreteria via email.',
     quoteComunicata: 'La quota verrà comunicata dalla segreteria.',
-    msgConfermaRec: 'Pre-iscrizione di <strong>{nome}</strong> al corso <strong>{corso}</strong> ricevuta.<br>Controlla la tua email a <strong>{email}</strong>.',
+    msgConfermaRec: 'Pre-iscrizione di <strong>{nome}</strong> al corso <strong>{corso}</strong> ricevuta.<br>Riceverai i documenti a <strong>{email}</strong> entro pochi minuti.',
     msgProvaRec: 'Richiesta di lezione di prova per <strong>{nome}</strong> ricevuta.<br><br>Riceverai la <strong>Dichiarazione di Assunzione di Responsabilità</strong> via email a <strong>{email}</strong>: stampala, firmala e portala il giorno della lezione.<br><br>La segreteria ti contatterà per confermare data e orario della lezione di prova.',
     msgProvaValutare: 'Richiesta per <strong>{nome}</strong> ricevuta.<br><br>La segreteria ti contatterà per valutare il corso più adatto e confermare data e orario della lezione di prova.',
     uploadOk: '\u2714 Ricevuta caricata. Grazie!',
@@ -735,8 +735,8 @@ var LANG = {
     ricercaCorso: 'Searching...',
     quoteAdulti: 'Fees for this course will be communicated by the secretariat via email.',
     quoteComunicata: 'Fees will be communicated by the secretariat.',
-    msgConfermaRec: 'Pre-enrollment for <strong>{nome}</strong> in course <strong>{corso}</strong> received.<br>Check your email at <strong>{email}</strong>.',
-    msgProvaRec: 'Trial lesson request for <strong>{nome}</strong> received.<br><br>You will receive the Liability Waiver by email at <strong>{email}</strong>: print, sign and bring it on the day of the lesson.<br><br>The secretariat will contact you to confirm date and time.',
+    msgConfermaRec: 'Pre-enrollment for <strong>{nome}</strong> in course <strong>{corso}</strong> received.<br>You will receive the documents at <strong>{email}</strong> within a few minutes.',
+    msgProvaRec: 'Trial lesson request for <strong>{nome}</strong> received.<br><br>You will receive the Liability Waiver and all documents by email at <strong>{email}</strong> within a few minutes: print, sign and bring the waiver on the day of the lesson.<br><br>The secretariat will contact you to confirm date and time.',
     msgProvaValutare: 'Request for <strong>{nome}</strong> received.<br><br>The secretariat will contact you to assess the most suitable course and confirm date and time.',
     uploadOk: '\u2714 Receipt uploaded. Thank you!',
     connErr: 'Connection error. Please try again.',
@@ -1430,7 +1430,9 @@ function mostraConfermaIscrizione(){
   vai('sConferma'); nascondiProgress();
   mostra('quoteSection'); mostra('bonificoSection'); mostra('uploadSection');
   document.getElementById('confermaTitle').textContent='Pre-iscrizione inviata!';
-  document.getElementById('msgConferma').innerHTML=t('msgConfermaRec').replace('{nome}',DATI.nomeAtleta+' '+DATI.cognomeAtleta).replace('{corso}',DATI.corso).replace('{email}',DATI.emailGenitore);
+  var msgA=t('msgConfermaRec').replace('{nome}',DATI.nomeAtleta+' '+DATI.cognomeAtleta).replace('{corso}',DATI.corso).replace('{email}',DATI.emailGenitore);
+  msgA+='<br><br><span style="font-size:.83rem;color:#555">&#9201; Riceverai l\'email con i documenti allegati entro pochi minuti.</span>';
+  document.getElementById('msgConferma').innerHTML=msgA;
   var q=QUOTE_DATA[DATI.corso]; var html='';
   if(q&&q.categoria==='Adulti'){
     html='<div class="alert alert-info">'+t('quoteAdulti')+'</div>';
@@ -1461,6 +1463,7 @@ function mostraConfermaProva(){
   var msg=DA_VALUTARE_P
     ?t('msgProvaValutare').replace('{nome}',nomeCompleto)
     :t('msgProvaRec').replace('{nome}',nomeCompleto).replace('{email}',DATI.emailGenitore);
+  msg+='<br><br><span style="font-size:.83rem;color:#555">&#9201; Riceverai l\'email con i documenti allegati entro pochi minuti.</span>';
   if(!DA_VALUTARE_P&&DATI.corso){
     msg+='<br><span style="font-size:.83rem;color:#666">Corso assegnato: <strong>'+DATI.corso+'</strong></span>';
   }
