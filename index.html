@@ -317,7 +317,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   </div>
   <div class="grid-2">
     <div class="field-group"><label>Codice fiscale *</label><input type="text" id="cfAtleta" maxlength="16" placeholder="RSSSOF10A01F205X" style="text-transform:uppercase"></div>
-    <div class="field-group"><label>Carta d'identità</label><input type="text" id="ciAtleta" placeholder="CD9876543"></div>
+    <div class="field-group"><label>Carta d'identità *</label><input type="text" id="ciAtleta" placeholder="CD9876543"></div>
   </div>
   <div class="field-group"><label>Data di nascita *</label><input type="date" id="dataNascitaAtleta"></div>
   <div class="grid-3">
@@ -381,7 +381,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   </div>
   <div class="grid-2">
     <div class="field-group"><label>Codice fiscale *</label><input type="text" id="cfGenitore" maxlength="16" placeholder="RSSMRA75A01F205X" style="text-transform:uppercase"></div>
-    <div class="field-group"><label>Carta d'identità</label><input type="text" id="ciGenitore" placeholder="AB1234567"></div>
+    <div class="field-group"><label>Carta d'identità *</label><input type="text" id="ciGenitore" placeholder="AB1234567"></div>
   </div>
   <div class="grid-3">
     <div class="field-group"><label>Città di nascita *</label><input type="text" id="cittaNascitaGenitore" placeholder="Milano"></div>
@@ -942,7 +942,7 @@ function init() {
     if(FLUSSO==='B') vai('sB'); else vai('s_tipo'); nascondiProgress();
   };
   document.getElementById('btnNext1').onclick = function(){
-    var campiBase=['nomeAtleta','cognomeAtleta','cfAtleta','dataNascitaAtleta','cittaNascitaAtleta','provNascitaAtleta','nazioneNascitaAtleta','cittaResidenzaAtleta','provResidenzaAtleta','capAtleta','viaAtleta','civicoAtleta'];
+    var campiBase=['nomeAtleta','cognomeAtleta','cfAtleta','ciAtleta','dataNascitaAtleta','cittaNascitaAtleta','provNascitaAtleta','nazioneNascitaAtleta','cittaResidenzaAtleta','provResidenzaAtleta','capAtleta','viaAtleta','civicoAtleta'];
     var cf1=document.getElementById('cfAtleta').value.trim().toUpperCase();
     MAGGIORENNE=isMaggiorenne(cf1);
     // Se maggiorenne valida anche email e cellulare in questa pagina
@@ -989,7 +989,7 @@ function init() {
   // S2
   document.getElementById('btnBack2').onclick = function(){ vai('s1'); progress(1); };
   document.getElementById('btnNext2').onclick = function(){
-    if(ok(['nomeGenitore','cognomeGenitore','cfGenitore','cittaNascitaGenitore','provNascitaGenitore','nazioneNascitaGenitore','dataNascitaGenitore','cittaResidenzaGenitore','provResidenzaGenitore','capGenitore','viaGenitore','civicoGenitore','emailGenitore_s2','telefonoGenitore_s2'])){
+    if(ok(['nomeGenitore','cognomeGenitore','cfGenitore','ciGenitore','cittaNascitaGenitore','provNascitaGenitore','nazioneNascitaGenitore','dataNascitaGenitore','cittaResidenzaGenitore','provResidenzaGenitore','capGenitore','viaGenitore','civicoGenitore','emailGenitore_s2','telefonoGenitore_s2'])){
       if(TIPO_ATTIVITA==='fitness'){ aggiornaSelectPerFitness(); }
       document.getElementById('noteCorso').textContent='Le quote verranno mostrate dopo l\'invio.';
       vai('s3'); progress(3);
