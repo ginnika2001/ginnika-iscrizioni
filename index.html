@@ -785,7 +785,9 @@ function init() {
   };
 
   // S2P
+  // Back da s2p — torna sempre a s1p
   document.getElementById('btnBack2p').onclick = function(){ vai('s1p'); progress(1); };
+
   document.getElementById('btnNext2p').onclick = function(){
     if(ok(['pNomeGenitore','pCognomeGenitore','pCfGenitore','pDataNascitaGenitore','pCittaNascitaGenitore','pEmail','pTelefono'])){
       if(TIPO_ATTIVITA==='fitness'){
@@ -909,8 +911,10 @@ function init() {
   // S3
   document.getElementById('corso').onchange = function(){ aggiornaAlertCert(); };
   document.getElementById('btnBack3').onclick = function(){
-    if(FLUSSO==='P'){ vai('s_sede'); progress(3); }
-    else if(MAGGIORENNE){ vai('s1mag'); progress(2); }
+    if(FLUSSO==='P'){
+      if(TIPO_ATTIVITA==='fitness'){ vai('s_fitness_contatti'); progress(2); }
+      else { vai('s_sede'); progress(3); }
+    } else if(MAGGIORENNE){ vai('s1mag'); progress(2); }
     else{ vai('s2'); progress(2); }
   };
   document.getElementById('btnNext3').onclick = function(){
@@ -943,8 +947,10 @@ function init() {
 
   // S4
   document.getElementById('btnBack4').onclick = function(){
-    if(FLUSSO==='P'){ vai('s_sede'); progress(3); }
-    else{ vai('s3b'); progress(3); }
+    if(FLUSSO==='P'){
+      if(TIPO_ATTIVITA==='fitness'){ vai('s3'); progress(3); }
+      else { vai('s_sede'); progress(3); }
+    } else { vai('s3b'); progress(3); }
   };
   document.getElementById('btnInvia').onclick = inviaForm;
 
