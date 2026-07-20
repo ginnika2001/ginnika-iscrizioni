@@ -602,6 +602,58 @@ function setLingua(l) {
   applicaLingua();
 }
 
+function st(id,v){ var e=document.getElementById(id); if(e&&v!==undefined) e.textContent=v; }
+function sh(id,v){ var e=document.getElementById(id); if(e&&v!==undefined) e.innerHTML=v; }
+
+function applicaLingua() {
+  var it = LINGUA==='it';
+  // Header
+  var hSub = document.getElementById('headerSub');
+  if (hSub) hSub.textContent = (it ? 'Stagione ' : 'Season ') + STAGIONE + (it ? ' \u2014 Iscrizioni e lezioni di prova' : ' \u2014 Enrollments and trial lessons');
+  // S0
+  var s0T = document.querySelector('#s0 .step-title'); if (s0T) s0T.textContent = it ? 'Benvenuto/a! Come vuoi procedere?' : 'Welcome! How would you like to proceed?';
+  var s0I = document.querySelector('#s0 .alert-info'); if (s0I) s0I.textContent = it ? "La pre-iscrizione genera un modulo precompilato via email. L\u2019iscrizione \u00e8 ufficiale solo dopo aver consegnato il modulo firmato e la copia di pagamento in palestra." : "The pre-enrollment generates a pre-filled form sent by email. Enrollment is official only after delivering the signed form and payment to the gym.";
+  // Pulsanti S0
+  var btnP = document.getElementById('btnP'); if (btnP) btnP.innerHTML = '<span class="icon">\u2b50</span>'+(it?'Lezione di prova<br><small style="font-weight:400">2 lezioni gratuite</small>':'Trial lesson<br><small style="font-weight:400">2 free lessons</small>');
+  var btnA = document.getElementById('btnA'); if (btnA) btnA.innerHTML = '<span class="icon">\ud83c\udd95</span>'+(it?'Nuova iscrizione<br><small style="font-weight:400">Prima volta</small>':'New enrollment<br><small style="font-weight:400">First time</small>');
+  var btnB = document.getElementById('btnB'); if (btnB) btnB.innerHTML = '<span class="icon">\ud83d\udd04</span>'+(it?'Rinnovo<br><small style="font-weight:400">Gi\u00e0 iscritta</small>':'Renewal<br><small style="font-weight:400">Already enrolled</small>');
+  // S_TIPO
+  var tTipo = document.querySelector('#s_tipo .step-title'); if (tTipo) tTipo.textContent = it ? 'Tipo di attivit\u00e0' : 'Type of activity';
+  var btnR = document.getElementById('btnTipoRitmica'); if (btnR) btnR.innerHTML = '<span class="icon">\ud83e\udd38</span>'+(it?'Ginnastica ritmica<br><small style="font-weight:400">Baby, Base, Intermedio, Agonistica</small>':'Rhythmic gymnastics<br><small style="font-weight:400">Baby, Base, Intermediate, Competitive</small>');
+  var btnF = document.getElementById('btnTipoFitness'); if (btnF) btnF.innerHTML = '<span class="icon">\ud83e\uddd8</span>'+(it?'Fitness adulti<br><small style="font-weight:400">Fitness, Pilates, Risveglio Motorio</small>':'Adult fitness<br><small style="font-weight:400">Fitness, Pilates, Motor Awakening</small>');
+  // Pulsanti naviga generici
+  document.querySelectorAll('.btn-back').forEach(function(b){ if (b.textContent.indexOf('\u2190')>=0 || b.textContent.indexOf('Back')>=0 || b.textContent.indexOf('Indietro')>=0) b.textContent = it ? '\u2190 Indietro' : '\u2190 Back'; });
+  document.querySelectorAll('.btn-next').forEach(function(b){ if (b.id !== 'btnInvia' && b.id !== 'btnCerca') { if (b.textContent.indexOf('\u2192')>=0||b.textContent.indexOf('Avanti')>=0||b.textContent.indexOf('Next')>=0) b.textContent = it ? 'Avanti \u2192' : 'Next \u2192'; } });
+  var btnInvia = document.getElementById('btnInvia'); if (btnInvia) btnInvia.textContent = it ? 'Invia' : 'Submit';
+  var btnCerca = document.getElementById('btnCerca'); if (btnCerca && !btnCerca.disabled) btnCerca.textContent = it ? 'Cerca' : 'Search';
+  // Titoli step
+  var titles = {
+    'sB': it?'Cerca l\u2019atleta':'Find the athlete',
+    's1p': it?'Dati dell\u2019atleta':'Athlete details',
+    's2p': it?'Dati del genitore / tutore':'Parent / guardian details',
+    's_fitness_contatti': it?'Contatti dell\u2019atleta':'Athlete contacts',
+    's_sport': it?'Esperienza sportiva pregressa':'Sports experience',
+    's_sede': it?'Sede preferita':'Preferred location',
+    's1': it?'Dati dell\u2019atleta':'Athlete details',
+    's1mag': it?'Contatti':'Contacts',
+    's2': it?'Dati del genitore / tutore':'Parent / guardian details',
+    's3': it?'Scelta corso':'Course selection',
+    's3b': it?'Certificato medico':'Medical certificate',
+    's4': it?'Consensi e dichiarazioni':'Consents and declarations',
+  };
+  Object.keys(titles).forEach(function(id){
+    var el = document.querySelector('#'+id+' .step-title'); if (el) el.textContent = titles[id];
+  });
+  // Label ricerca CF
+  var lblCF = document.querySelector('#sB .field-group label'); if (lblCF) lblCF.textContent = it ? 'Codice fiscale dell\u2019atleta *' : 'Athlete tax code *';
+  // Upload
+  var upTxt = document.getElementById('uploadTxt'); if (upTxt) upTxt.textContent = it ? 'Puoi caricarla ora oppure tornare tramite il link che riceverai nell\u2019email.' : 'You can upload it now or return via the link in the email.';
+  var btnSf = document.getElementById('btnSfoglia'); if (btnSf) btnSf.textContent = it ? 'Sfoglia file' : 'Browse file';
+  var btnCar = document.getElementById('btnCarica'); if (btnCar) btnCar.textContent = it ? 'Carica ricevuta' : 'Upload receipt';
+  // Footer
+  document.querySelectorAll('#footerContatto,#footerContatto2').forEach(function(el){ if(el) el.innerHTML = it ? 'Per informazioni: <strong>info@ginnika2001.com</strong> \u2014 WhatsApp <strong>+39 351 4136992</strong>' : 'For information: <strong>info@ginnika2001.com</strong> \u2014 WhatsApp <strong>+39 351 4136992</strong>'; });
+}
+
 function t(k) {
   var lang = LANG[LINGUA] || LANG['it'];
   return lang[k] !== undefined ? lang[k] : (LANG['it'][k] || k);
@@ -726,7 +778,10 @@ function init() {
   // S1P
   document.getElementById('btnBack1p').onclick = function(){ vai('s_tipo'); nascondiProgress(); };
   document.getElementById('btnNext1p').onclick = function(){
-    if(ok(['pNomeAtleta','pCognomeAtleta','pCfAtleta','pDataNascitaAtleta','pCittaNascitaAtleta'])){ vai('s2p'); progress(2); }
+    if(ok(['pNomeAtleta','pCognomeAtleta','pCfAtleta','pDataNascitaAtleta','pCittaNascitaAtleta'])){
+      if(TIPO_ATTIVITA==='fitness'){ vai('s_fitness_contatti'); progress(2); }
+      else { vai('s2p'); progress(2); }
+    }
   };
 
   // S2P
@@ -742,7 +797,10 @@ function init() {
   };
 
   // S_FITNESS_CONTATTI
-  document.getElementById('btnBackFitnessContatti').onclick = function(){ vai('s2p'); progress(2); };
+  document.getElementById('btnBackFitnessContatti').onclick = function(){
+    if(TIPO_ATTIVITA==='fitness'){ vai('s1p'); progress(1); }
+    else { vai('s2p'); progress(2); }
+  };
   document.getElementById('btnNextFitnessContatti').onclick = function(){
     if(ok(['fitnessEmail','fitnessTelefono'])){
       aggiornaSelectPerFitness();
