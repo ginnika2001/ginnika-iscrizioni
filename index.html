@@ -229,7 +229,6 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 </div>
 
-
 <!-- S_FITNESS_CONTATTI — email e cellulare atleta (flusso P fitness) -->
 <div class="page hidden" id="s_fitness_contatti">
 <div class="card">
@@ -575,26 +574,89 @@ var FLUSSO=null, ATLETA=null, DATI=null, MAGGIORENNE=false;
 var TIPO_ATTIVITA=null, SPORT_PREGRESSA=null, ANNI_PRATICA=null;
 var SEDE_PREF=null, CORSO_P_AUTO=null, DA_VALUTARE_P=false;
 
-var LINGUA='it';
-function setLingua(l){
-  LINGUA=l;
-  document.getElementById('btnLangIT').style.background=l==='it'?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.15)';
-  document.getElementById('btnLangEN').style.background=l==='en'?'rgba(255,255,255,0.4)':'rgba(255,255,255,0.15)';
-}
 var STEPS=['s0','sB','s_tipo','s1p','s2p','s_fitness_contatti','s_sport','s_sede','s1','s1mag','s2','s3','s3b','s4','sConferma','sUploadDiretto'];
 
 // ============================================================
 // CHIAMATA AL BACKEND — fetch con CORS
 // ============================================================
 function chiamaBackend(azione, dati, callback) {
-  // Usiamo GET per evitare problemi CORS con Apps Script
-  var payload = encodeURIComponent(JSON.stringify(dati || {}));
-  var url = BACKEND_URL + '?azione=' + encodeURIComponent(azione) + '&payload=' + payload;
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(data){ callback(null, data); })
-    .catch(function(err){ callback(err, null); });
+  fetch(BACKEND_URL, {
+    method: 'POST',
+    body: JSON.stringify({ azione: azione, dati: dati }),
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){ callback(null, data); })
+  .catch(function(err){ callback(err, null); });
 }
+
+// ============================================================
+// LINGUA
+// ============================================================
+var LINGUA = 'it';
+function setLingua(l) {
+  LINGUA = l;
+  var btnIT = document.getElementById('btnLangIT');
+  var btnEN = document.getElementById('btnLangEN');
+  if (btnIT) btnIT.style.background = l==='it' ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)';
+  if (btnEN) btnEN.style.background = l==='en' ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.15)';
+  applicaLingua();
+}
+
+function t(k) {
+  var lang = LANG[LINGUA] || LANG['it'];
+  return lang[k] !== undefined ? lang[k] : (LANG['it'][k] || k);
+}
+
+var LANG = {
+  it: {
+    headerSub: 'Stagione 2026/2027 — Iscrizioni e lezioni di prova',
+    benvenuto: 'Benvenuto/a! Come vuoi procedere?',
+    s0Info: 'La pre-iscrizione genera un modulo precompilato via email. L\'iscrizione è ufficiale solo dopo aver consegnato il modulo firmato e la copia di pagamento in palestra.',
+    certNoMsg: 'Nessun problema. Se hai necessità di certificato agonistico, riceverai il modulo di richiesta dalla segreteria dopo il pagamento della prima rata. Se invece hai necessità di certificato non agonistico, puoi procedere in autonomia con il tuo pediatra o medico di base.',
+    alertBaby: '\ud83d\udfe2 <strong>Nessun certificato medico richiesto</strong> per questo corso.',
+    alertNonAgo: '\ud83d\udd35 <strong>Certificato medico per attività sportiva non agonistica</strong>, rilasciabile dal pediatra o medico di base.',
+    alertAgo: '\ud83d\udfe1 <strong>Certificato medico per attività sportiva agonistica</strong>. La società ti invierà il modulo di richiesta dopo il pagamento della prima rata.',
+    certScad: '\u274c Certificato <strong>scaduto il {data}</strong>. Rinnova prima di riprendere gli allenamenti.',
+    certInScad: '\u26a0\ufe0f Certificato in scadenza il <strong>{data}</strong>. Consigliamo di rinnovarlo prima dell\'inizio della stagione.',
+    certOk: '\u2705 Certificato valido fino al <strong>{data}</strong>. Porta copia in palestra al primo allenamento.',
+    certAssente: '\u26a0\ufe0f Nessun certificato registrato. Contatta la segreteria: <strong>info@ginnika2001.com</strong>',
+    cfNotFound: '\u26a0\ufe0f Codice fiscale non trovato. Controlla oppure procedi come nuova iscrizione.',
+    btnNuovaIscr: 'Procedi come nuova iscrizione \u2192',
+    continua: 'Continua con il rinnovo \u2192',
+    ricercaCorso: 'Ricerca in corso...',
+    quoteAdulti: 'Le quote per questo corso ti verranno comunicate dalla segreteria via email.',
+    quoteComunicata: 'La quota verrà comunicata dalla segreteria.',
+    msgConfermaRec: 'Pre-iscrizione di <strong>{nome}</strong> al corso <strong>{corso}</strong> ricevuta.<br>Controlla la tua email a <strong>{email}</strong>.',
+    msgProvaRec: 'Richiesta di lezione di prova per <strong>{nome}</strong> ricevuta.<br><br>Riceverai la <strong>Dichiarazione di Assunzione di Responsabilità</strong> via email a <strong>{email}</strong>: stampala, firmala e portala il giorno della lezione.<br><br>La segreteria ti contatterà per confermare data e orario della lezione di prova.',
+    msgProvaValutare: 'Richiesta per <strong>{nome}</strong> ricevuta.<br><br>La segreteria ti contatterà per valutare il corso più adatto e confermare data e orario della lezione di prova.',
+    uploadOk: '\u2714 Ricevuta caricata. Grazie!',
+    connErr: 'Errore di connessione. Riprova.',
+  },
+  en: {
+    headerSub: 'Season 2026/2027 — Enrollments and trial lessons',
+    benvenuto: 'Welcome! How would you like to proceed?',
+    s0Info: 'The pre-enrollment generates a pre-filled form sent by email. Enrollment is official only after delivering the signed form and payment to the gym.',
+    certNoMsg: 'No problem. If you need a competitive certificate, the secretariat will send you the request form after payment of the first instalment. If you need a non-competitive certificate, you can proceed independently with your GP or family doctor.',
+    alertBaby: '\ud83d\udfe2 <strong>No medical certificate required</strong> for this course.',
+    alertNonAgo: '\ud83d\udd35 <strong>Non-competitive sports medical certificate</strong>, available from your GP or family doctor.',
+    alertAgo: '\ud83d\udfe1 <strong>Competitive sports medical certificate</strong>. The club will send the request form after payment of the first instalment.',
+    certScad: '\u274c Certificate <strong>expired on {data}</strong>. Please renew before returning to training.',
+    certInScad: '\u26a0\ufe0f Certificate expiring on <strong>{data}</strong>. We recommend renewing before the season starts.',
+    certOk: '\u2705 Certificate valid until <strong>{data}</strong>. Bring a copy to the gym on your first training day.',
+    certAssente: '\u26a0\ufe0f No certificate on record. Contact: <strong>info@ginnika2001.com</strong>',
+    cfNotFound: '\u26a0\ufe0f Tax code not found. Please check and try again.',
+    btnNuovaIscr: 'Proceed as new enrollment \u2192',
+    continua: 'Continue with renewal \u2192',
+    ricercaCorso: 'Searching...',
+    quoteAdulti: 'Fees for this course will be communicated by the secretariat via email.',
+    quoteComunicata: 'Fees will be communicated by the secretariat.',
+    msgConfermaRec: 'Pre-enrollment for <strong>{nome}</strong> in course <strong>{corso}</strong> received.<br>Check your email at <strong>{email}</strong>.',
+    msgProvaRec: 'Trial lesson request for <strong>{nome}</strong> received.<br><br>You will receive the Liability Waiver by email at <strong>{email}</strong>: print, sign and bring it on the day of the lesson.<br><br>The secretariat will contact you to confirm date and time.',
+    msgProvaValutare: 'Request for <strong>{nome}</strong> received.<br><br>The secretariat will contact you to assess the most suitable course and confirm date and time.',
+    uploadOk: '\u2714 Receipt uploaded. Thank you!',
+    connErr: 'Connection error. Please try again.',
+  }
+};
 
 // ============================================================
 // CARICA DATI INIZIALI
@@ -615,7 +677,7 @@ function caricaDatiIniziali() {
       QUOTE_DATA   = data.quote        || {};
       PLANNING_DATA= data.planning     || {};
 
-      document.getElementById('headerSub').textContent = 'Stagione ' + STAGIONE + ' \u2014 Iscrizioni e lezioni di prova';
+      document.getElementById('headerSub').textContent = t('headerSub').replace('2026/2027', STAGIONE);
       document.getElementById('quoteStagione').textContent = STAGIONE;
       document.getElementById('uploadDragTxt').innerHTML = '\ud83d\udcce Trascina il file o clicca per selezionarlo<br><small>PDF, JPG, PNG \u2014 max ' + MAX_MB + 'MB</small>';
 
@@ -672,10 +734,8 @@ function init() {
   document.getElementById('btnNext2p').onclick = function(){
     if(ok(['pNomeGenitore','pCognomeGenitore','pCfGenitore','pDataNascitaGenitore','pCittaNascitaGenitore','pEmail','pTelefono'])){
       if(TIPO_ATTIVITA==='fitness'){
-        // Fitness: vai a raccolta contatti atleta
         vai('s_fitness_contatti'); progress(3);
       } else {
-        // Ritmica: vai al questionario esperienza
         vai('s_sport'); progress(3);
       }
     }
@@ -686,7 +746,7 @@ function init() {
   document.getElementById('btnNextFitnessContatti').onclick = function(){
     if(ok(['fitnessEmail','fitnessTelefono'])){
       aggiornaSelectPerFitness();
-      document.getElementById('noteCorso').textContent = 'Le quote per questo corso ti verranno comunicate dalla segreteria via email.';
+      document.getElementById('noteCorso').textContent = t('quoteAdulti');
       vai('s3'); progress(3);
     }
   };
@@ -932,9 +992,9 @@ function aggiornaAlertCert() {
   if(!corso){ box.classList.add('hidden'); return; }
   var richiedeCert='no';
   for(var i=0;i<CORSI_DATA.length;i++){ if(CORSI_DATA[i].nome===corso){ richiedeCert=CORSI_DATA[i].richiedeCert||'no'; break; } }
-  if(richiedeCert==='no')                { box.className='alert alert-ok';   box.innerHTML='🟢 <strong>Nessun certificato medico richiesto</strong> per questo corso.'; }
-  else if(richiedeCert==='non_agonistico'){ box.className='alert alert-info'; box.innerHTML='🔵 <strong>Certificato medico per attività sportiva non agonistica</strong>, rilasciabile dal pediatra o medico di base.'; }
-  else                                    { box.className='alert alert-warn'; box.innerHTML='🟡 <strong>Certificato medico per attività sportiva agonistica</strong>. La società ti invierà il modulo di richiesta dopo il pagamento della prima rata.'; }
+  if(richiedeCert==='no')                { box.className='alert alert-ok';   box.innerHTML=t('alertBaby'); }
+  else if(richiedeCert==='non_agonistico'){ box.className='alert alert-info'; box.innerHTML=t('alertNonAgo'); }
+  else                                    { box.className='alert alert-warn'; box.innerHTML=t('alertAgo'); }
   box.classList.remove('hidden');
 }
 
@@ -1042,10 +1102,10 @@ function cercaCF(){
     }
     ATLETA=r;
     var _s=r.scadenzaCert||'';
-    var cert=r.statoCert==='scaduto'?'<div class="alert alert-danger">❌ Certificato <strong>scaduto il '+_s+'</strong>.</div>'
-      :r.statoCert==='in_scadenza'?'<div class="alert alert-warn">⚠️ Certificato in scadenza il <strong>'+_s+'</strong>.</div>'
-      :r.statoCert==='ok'?'<div class="alert alert-ok">✅ Certificato valido fino al <strong>'+_s+'</strong>.</div>'
-      :'<div class="alert alert-warn">⚠️ Nessun certificato registrato.</div>';
+    var cert=r.statoCert==='scaduto'?'<div class="alert alert-danger">'+t('certScad').replace('{data}',_s)+'</div>'
+      :r.statoCert==='in_scadenza'?'<div class="alert alert-warn">'+t('certInScad').replace('{data}',_s)+'</div>'
+      :r.statoCert==='ok'?'<div class="alert alert-ok">'+t('certOk').replace('{data}',_s)+'</div>'
+      :'<div class="alert alert-warn">'+t('certAssente')+'</div>';
     document.getElementById('lookupResult').innerHTML=
       '<div class="atleta-card"><div class="nome">'+r.nomeAtleta+' '+r.cognomeAtleta+'</div>'+
       '<div class="det">Corso attuale: <strong>'+r.corsoAttuale+'</strong></div></div>'+cert+
@@ -1123,7 +1183,6 @@ function raccogliDati(){
     cfAtleta:g('pCfAtleta').toUpperCase(), dataNascitaAtleta:dt('pDataNascitaAtleta'),
     cittaNascitaAtleta:g('pCittaNascitaAtleta'), provNascitaAtleta:g('pProvNascitaAtleta'),
     nazioneNascitaAtleta:g('pNazioneNascitaAtleta')||'Italia',
-    // Fitness: usa dati atleta come genitore (sempre maggiorenne)
     nomeGenitore:TIPO_ATTIVITA==='fitness'?g('pNomeAtleta'):g('pNomeGenitore'),
     cognomeGenitore:TIPO_ATTIVITA==='fitness'?g('pCognomeAtleta'):g('pCognomeGenitore'),
     cfGenitore:TIPO_ATTIVITA==='fitness'?g('pCfAtleta').toUpperCase():g('pCfGenitore').toUpperCase(),
@@ -1186,10 +1245,10 @@ function mostraConfermaIscrizione(){
   vai('sConferma'); nascondiProgress();
   mostra('quoteSection'); mostra('bonificoSection'); mostra('uploadSection');
   document.getElementById('confermaTitle').textContent='Pre-iscrizione inviata!';
-  document.getElementById('msgConferma').innerHTML='Pre-iscrizione di <strong>'+DATI.nomeAtleta+' '+DATI.cognomeAtleta+'</strong> al corso <strong>'+DATI.corso+'</strong> ricevuta.<br>Controlla la tua email a <strong>'+DATI.emailGenitore+'</strong>.';
+  document.getElementById('msgConferma').innerHTML=t('msgConfermaRec').replace('{nome}',DATI.nomeAtleta+' '+DATI.cognomeAtleta).replace('{corso}',DATI.corso).replace('{email}',DATI.emailGenitore);
   var q=QUOTE_DATA[DATI.corso]; var html='';
   if(q&&q.categoria==='Adulti'){
-    html='<div class="alert alert-info">Le quote per questo corso ti verranno comunicate dalla segreteria via email.</div>';
+    html='<div class="alert alert-info">'+t('quoteAdulti')+'</div>';
   } else if(q&&q.unica){
     html='<div class="quote-box"><h3>'+DATI.corso+'</h3>';
     html+='<div class="quote-row"><span>Quota intera</span><strong>'+q.unica+' €</strong></div>';
@@ -1215,8 +1274,8 @@ function mostraConfermaProva(){
   document.getElementById('confermaTitle').textContent='Richiesta inviata!';
   var nomeCompleto=DATI.nomeAtleta+' '+DATI.cognomeAtleta;
   var msg=DA_VALUTARE_P
-    ?'Richiesta per <strong>'+nomeCompleto+'</strong> ricevuta.<br><br>La segreteria ti contatterà per valutare il corso più adatto e confermare data e orario della lezione di prova.'
-    :'Richiesta di lezione di prova per <strong>'+nomeCompleto+'</strong> ricevuta.<br><br>Riceverai la <strong>Dichiarazione di Assunzione di Responsabilità</strong> via email a <strong>'+DATI.emailGenitore+'</strong>: stampala, firmala e portala il giorno della lezione.<br><br>La segreteria ti contatterà per confermare data e orario.';
+    ?t('msgProvaValutare').replace('{nome}',nomeCompleto)
+    :t('msgProvaRec').replace('{nome}',nomeCompleto).replace('{email}',DATI.emailGenitore);
   if(!DA_VALUTARE_P&&DATI.corso){
     msg+='<br><span style="font-size:.83rem;color:#666">Corso assegnato: <strong>'+DATI.corso+'</strong></span>';
   }
