@@ -360,8 +360,8 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   <div class="step-title">Contatti</div>
   <div class="alert alert-warn" style="margin-bottom:16px;font-size:.83rem;line-height:1.6"><strong>⚠️ Attenzione — dati fiscali</strong><br>Questi dati verranno associati alla ricevuta di pagamento e potranno essere utilizzati per la <strong>detrazione fiscale 730</strong>. Inseriscili con cura.</div>
   <div class="grid-2">
-    <div class="field-group"><label>Email *</label><input type="email" id="emailAtleta" placeholder="maria.rossi@email.it"></div>
-    <div class="field-group"><label>Cellulare *</label><input type="tel" id="telefonoAtleta" placeholder="+39 333 1234567"></div>
+    <div class="field-group"><label>Email *</label><input type="email" id="emailAtletaHidden" placeholder="maria.rossi@email.it"></div>
+    <div class="field-group"><label>Cellulare *</label><input type="tel" id="telefonoAtletaHidden" placeholder="+39 333 1234567"></div>
   </div>
   <div class="nav-buttons">
     <button class="btn-back" id="btnBack1mag">← Indietro</button>
@@ -979,7 +979,7 @@ function init() {
   // S1mag
   document.getElementById('btnBack1mag').onclick = function(){ vai('s1'); progress(1); };
   document.getElementById('btnNext1mag').onclick = function(){
-    if(ok(['emailAtleta','telefonoAtleta'])){
+    if(ok(['emailAtletaHidden','telefonoAtletaHidden'])){
       if(TIPO_ATTIVITA==='fitness'){ aggiornaSelectPerFitness(); }
       document.getElementById('noteCorso').textContent='Le quote verranno mostrate dopo l\'invio.';
       vai('s3'); progress(3);
@@ -1420,8 +1420,8 @@ function raccogliDati(){
   var capGen=_mag?g('capAtleta'):g('capGenitore');
   var viaGen=_mag?g('viaAtleta'):g('viaGenitore');
   var civGen=_mag?g('civicoAtleta'):g('civicoGenitore');
-  var emailGen=_mag?g('emailAtletaS1'):g('emailGenitore_s2');
-  var telGen=_mag?g('telefonoAtletaS1'):g('telefonoGenitore_s2');
+  var emailGen=_mag?(g('emailAtletaS1')||g('emailAtletaHidden')):g('emailGenitore_s2');
+  var telGen=_mag?(g('telefonoAtletaS1')||g('telefonoAtletaHidden')):g('telefonoGenitore_s2');
 
   return {
     flusso:FLUSSO, maggiorenne:MAGGIORENNE, tipoAttivita:TIPO_ATTIVITA||'ritmica',
