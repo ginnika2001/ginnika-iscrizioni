@@ -317,7 +317,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   </div>
   <div class="grid-2">
     <div class="field-group"><label>Codice fiscale *</label><input type="text" id="cfAtleta" maxlength="16" placeholder="RSSSOF10A01F205X" style="text-transform:uppercase"></div>
-    <div class="field-group"><label>Carta d'identità *</label><input type="text" id="ciAtleta" placeholder="CD9876543"></div>
+    <div class="field-group"><label>Carta d'identità</label><input type="text" id="ciAtleta" placeholder="CD9876543"></div>
   </div>
   <div class="field-group"><label>Data di nascita *</label><input type="date" id="dataNascitaAtleta"></div>
   <div class="grid-3">
@@ -381,7 +381,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   </div>
   <div class="grid-2">
     <div class="field-group"><label>Codice fiscale *</label><input type="text" id="cfGenitore" maxlength="16" placeholder="RSSMRA75A01F205X" style="text-transform:uppercase"></div>
-    <div class="field-group"><label>Carta d'identità *</label><input type="text" id="ciGenitore" placeholder="AB1234567"></div>
+    <div class="field-group"><label>Carta d'identità</label><input type="text" id="ciGenitore" placeholder="AB1234567"></div>
   </div>
   <div class="grid-3">
     <div class="field-group"><label>Città di nascita *</label><input type="text" id="cittaNascitaGenitore" placeholder="Milano"></div>
@@ -828,7 +828,7 @@ function init() {
   document.getElementById('btnBack1p').onclick = function(){ vai('s_tipo'); nascondiProgress(); };
 
   // Mostra contatti se atleta P è maggiorenne
-  document.getElementById('pCfAtleta').onchange = function(){
+  document.getElementById('pCfAtleta').oninput = document.getElementById('pCfAtleta').onchange = function(){
     var cf=this.value.trim().toUpperCase(); this.value=cf;
     if(cf.length===16){
       if(isMaggiorenne(cf)){ mostra('contattiMaggiorenneS1p'); }
@@ -942,7 +942,7 @@ function init() {
     if(FLUSSO==='B') vai('sB'); else vai('s_tipo'); nascondiProgress();
   };
   document.getElementById('btnNext1').onclick = function(){
-    var campiBase=['nomeAtleta','cognomeAtleta','cfAtleta','ciAtleta','dataNascitaAtleta','cittaNascitaAtleta','provNascitaAtleta','nazioneNascitaAtleta','cittaResidenzaAtleta','provResidenzaAtleta','capAtleta','viaAtleta','civicoAtleta'];
+    var campiBase=['nomeAtleta','cognomeAtleta','cfAtleta','dataNascitaAtleta','cittaNascitaAtleta','provNascitaAtleta','nazioneNascitaAtleta','cittaResidenzaAtleta','provResidenzaAtleta','capAtleta','viaAtleta','civicoAtleta'];
     var cf1=document.getElementById('cfAtleta').value.trim().toUpperCase();
     MAGGIORENNE=isMaggiorenne(cf1);
     // Se maggiorenne valida anche email e cellulare in questa pagina
@@ -962,7 +962,7 @@ function init() {
     var a=new Date().getFullYear()-new Date(this.value).getFullYear();
     a>=13?mostra('notaFirma'):nascondi('notaFirma');
   };
-  document.getElementById('cfAtleta').onchange = function(){
+  document.getElementById('cfAtleta').oninput = document.getElementById('cfAtleta').onchange = function(){
     var cf=this.value.trim().toUpperCase();
     this.value=cf;
     if(cf.length===16){
@@ -989,7 +989,7 @@ function init() {
   // S2
   document.getElementById('btnBack2').onclick = function(){ vai('s1'); progress(1); };
   document.getElementById('btnNext2').onclick = function(){
-    if(ok(['nomeGenitore','cognomeGenitore','cfGenitore','ciGenitore','cittaNascitaGenitore','provNascitaGenitore','nazioneNascitaGenitore','dataNascitaGenitore','cittaResidenzaGenitore','provResidenzaGenitore','capGenitore','viaGenitore','civicoGenitore','emailGenitore_s2','telefonoGenitore_s2'])){
+    if(ok(['nomeGenitore','cognomeGenitore','cfGenitore','cittaNascitaGenitore','provNascitaGenitore','nazioneNascitaGenitore','dataNascitaGenitore','cittaResidenzaGenitore','provResidenzaGenitore','capGenitore','viaGenitore','civicoGenitore','emailGenitore_s2','telefonoGenitore_s2'])){
       if(TIPO_ATTIVITA==='fitness'){ aggiornaSelectPerFitness(); }
       document.getElementById('noteCorso').textContent='Le quote verranno mostrate dopo l\'invio.';
       vai('s3'); progress(3);
@@ -1402,21 +1402,26 @@ function raccogliDati(){
     consensoMarketing:(document.querySelector('input[name="consensoMarketing"]:checked')||{}).value||'No',
   };
 
-  var nomeGen=MAGGIORENNE?g('nomeAtleta'):g('nomeGenitore');
-  var cognGen=MAGGIORENNE?g('cognomeAtleta'):g('cognomeGenitore');
-  var cfGen=MAGGIORENNE?g('cfAtleta').toUpperCase():g('cfGenitore').toUpperCase();
-  var ciGen=MAGGIORENNE?(g('ciAtleta')||''):(g('ciGenitore')||'');
-  var dtNascGen=MAGGIORENNE?dt('dataNascitaAtleta'):dt('dataNascitaGenitore');
-  var cittaNGen=MAGGIORENNE?g('cittaNascitaAtleta'):g('cittaNascitaGenitore');
-  var provNGen=MAGGIORENNE?g('provNascitaAtleta').toUpperCase():g('provNascitaGenitore').toUpperCase();
-  var nazNGen=MAGGIORENNE?g('nazioneNascitaAtleta'):g('nazioneNascitaGenitore');
-  var cittaRGen=MAGGIORENNE?g('cittaResidenzaAtleta'):g('cittaResidenzaGenitore');
-  var provRGen=MAGGIORENNE?g('provResidenzaAtleta').toUpperCase():g('provResidenzaGenitore').toUpperCase();
-  var capGen=MAGGIORENNE?g('capAtleta'):g('capGenitore');
-  var viaGen=MAGGIORENNE?g('viaAtleta'):g('viaGenitore');
-  var civGen=MAGGIORENNE?g('civicoAtleta'):g('civicoGenitore');
-  var emailGen=MAGGIORENNE?g('emailAtleta'):g('emailGenitore_s2');
-  var telGen=MAGGIORENNE?g('telefonoAtleta'):g('telefonoGenitore_s2');
+  // Ricalcola MAGGIORENNE dal CF per sicurezza (onchange potrebbe non scattare se CF incollato)
+  var _cfCheck = g('cfAtleta').toUpperCase();
+  var _mag = isMaggiorenne(_cfCheck);
+  MAGGIORENNE = _mag; // aggiorna anche la variabile globale
+
+  var nomeGen=_mag?g('nomeAtleta'):g('nomeGenitore');
+  var cognGen=_mag?g('cognomeAtleta'):g('cognomeGenitore');
+  var cfGen=_mag?g('cfAtleta').toUpperCase():g('cfGenitore').toUpperCase();
+  var ciGen=_mag?(g('ciAtleta')||''):(g('ciGenitore')||'');
+  var dtNascGen=_mag?dt('dataNascitaAtleta'):dt('dataNascitaGenitore');
+  var cittaNGen=_mag?g('cittaNascitaAtleta'):g('cittaNascitaGenitore');
+  var provNGen=_mag?g('provNascitaAtleta').toUpperCase():g('provNascitaGenitore').toUpperCase();
+  var nazNGen=_mag?g('nazioneNascitaAtleta'):g('nazioneNascitaGenitore');
+  var cittaRGen=_mag?g('cittaResidenzaAtleta'):g('cittaResidenzaGenitore');
+  var provRGen=_mag?g('provResidenzaAtleta').toUpperCase():g('provResidenzaGenitore').toUpperCase();
+  var capGen=_mag?g('capAtleta'):g('capGenitore');
+  var viaGen=_mag?g('viaAtleta'):g('viaGenitore');
+  var civGen=_mag?g('civicoAtleta'):g('civicoGenitore');
+  var emailGen=_mag?g('emailAtleta'):g('emailGenitore_s2');
+  var telGen=_mag?g('telefonoAtleta'):g('telefonoGenitore_s2');
 
   return {
     flusso:FLUSSO, maggiorenne:MAGGIORENNE, tipoAttivita:TIPO_ATTIVITA||'ritmica',
