@@ -170,7 +170,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   <div class="step-title">Tipo di attività</div>
   <div class="choice-grid-2">
     <button class="btn-choice" id="btnTipoRitmica"><span class="icon">🤸</span>Ginnastica ritmica<br><small style="font-weight:400">Baby, Base, Intermedio, Agonistica</small></button>
-    <button class="btn-choice" id="btnTipoFitness"><span class="icon">🧘</span>Fitness adulti<br><small style="font-weight:400">Fitness, Pilates, Risveglio Motorio</small></button>
+    <button class="btn-choice" id="btnTipoFitness"><span class="icon">🧘</span>Fitness adulti<br><small style="font-weight:400">Fitness, Pilates, Risveglio Motorio, Yoga Dinamico</small></button>
   </div>
   <div class="nav-buttons"><button class="btn-back" id="btnBackTipo">← Indietro</button></div>
 </div>
@@ -194,7 +194,6 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
     <div class="field-group"><label>Nazione *</label><input type="text" id="pNazioneNascitaAtleta" placeholder="Italia"></div>
   </div>
 
-  <!-- Contatti maggiorenne — visibili solo se CF >= 18 anni (flusso P) -->
   <div id="contattiMaggiorenneS1p" class="hidden">
     <div class="alert alert-warn" style="margin-top:16px;font-size:.83rem;line-height:1.6">
       <strong>&#9888;&#65039; Attenzione &mdash; dati fiscali</strong><br>
@@ -242,7 +241,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 </div>
 
-<!-- S_FITNESS_CONTATTI — email e cellulare atleta (flusso P fitness) -->
+<!-- S_FITNESS_CONTATTI -->
 <div class="page hidden" id="s_fitness_contatti">
 <div class="card">
   <div class="step-title">Contatti dell'atleta</div>
@@ -257,7 +256,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 </div>
 
-<!-- S_SPORT — esperienza sportiva (solo flusso P ritmica) -->
+<!-- S_SPORT -->
 <div class="page hidden" id="s_sport">
 <div class="card">
   <div class="step-title">Esperienza sportiva pregressa</div>
@@ -289,7 +288,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 </div>
 
-<!-- S_SEDE — scelta sede (solo flusso P ritmica) -->
+<!-- S_SEDE -->
 <div class="page hidden" id="s_sede">
 <div class="card">
   <div class="step-title">Sede preferita</div>
@@ -335,7 +334,6 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
   </div>
   <div class="field-group"><label>Via / Piazza *</label><input type="text" id="viaAtleta" placeholder="Via Roma"></div>
 
-  <!-- Contatti maggiorenne — visibili solo se CF >= 18 anni -->
   <div id="contattiMaggiorenneS1" class="hidden">
     <div class="alert alert-warn" style="margin-top:16px;font-size:.83rem;line-height:1.6">
       <strong>⚠️ Attenzione — dati fiscali</strong><br>
@@ -354,7 +352,7 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 </div>
 
-<!-- S1mag — contatti atleta maggiorenne -->
+<!-- S1mag -->
 <div class="page hidden" id="s1mag">
 <div class="card">
   <div class="step-title">Contatti</div>
@@ -408,13 +406,12 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 </div>
 
-<!-- S3 — scelta corso (flusso A, B, P fitness) -->
+<!-- S3 — scelta corso -->
 <div class="page hidden" id="s3">
 <div class="card">
   <div class="step-title">Scelta corso</div>
   <div id="corsoAttualeInfo" class="hidden"></div>
 
-  <!-- Planning orari -->
   <div id="planningBox" class="hidden" style="margin-bottom:18px">
     <div style="font-size:.75rem;font-weight:700;color:#00a8b5;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Giorni di allenamento</div>
     <div id="planningPero" class="hidden" style="margin-bottom:12px">
@@ -586,16 +583,10 @@ input.errore,select.errore{border-color:#e53935!important;background:#fff5f5}
 </div>
 
 <script>
-// ============================================================
-// CONFIGURAZIONE BACKEND
-// ============================================================
 var BACKEND_URL = 'https://misty-term-0aefi.iscrizioniginnika2001.workers.dev';
 
-// Dati caricati dal backend
 var STAGIONE='', IBAN='', INTESTATARIO='', MAX_MB=10;
 var CORSI_DATA=[], QUOTE_DATA={}, PLANNING_DATA={};
-
-// Stato
 var FLUSSO=null, ATLETA=null, DATI=null, MAGGIORENNE=false;
 var TIPO_ATTIVITA=null, SPORT_PREGRESSA=null, ANNI_PRATICA=null;
 var SEDE_PREF=null, CORSO_P_AUTO=null, DA_VALUTARE_P=false;
@@ -603,11 +594,12 @@ var SEDE_PREF=null, CORSO_P_AUTO=null, DA_VALUTARE_P=false;
 var STEPS=['s0','sB','s_tipo','s1p','s2p','s_fitness_contatti','s_sport','s_sede','s1','s1mag','s2','s3','s3b','s4','sConferma','sUploadDiretto'];
 
 // ============================================================
-// CHIAMATA AL BACKEND — fetch con CORS
+// CORSI FITNESS HARDCODED — fallback se backend non restituisce categoria Adulti
 // ============================================================
+var CORSI_FITNESS_FALLBACK = ['Fitness & Ritmica','Pilates','Risveglio Motorio','Yoga Dinamico'];
+
 function chiamaBackend(azione, dati, callback) {
   console.log('chiamaBackend:', azione);
-  // salvaRicevuta usa POST perche il payload base64 e troppo grande per un URL GET
   if (azione === 'salvaRicevuta') {
     fetch(BACKEND_URL + '?azione=salvaRicevuta', {
       method: 'POST',
@@ -622,7 +614,6 @@ function chiamaBackend(azione, dati, callback) {
     .catch(function(err){ console.error('Errore:', err.message); callback(err, null); });
     return;
   }
-  // Tutte le altre azioni usano GET
   var payload = encodeURIComponent(JSON.stringify(dati || {}));
   var url = BACKEND_URL + '?azione=' + encodeURIComponent(azione) + '&payload=' + payload;
   fetch(url, { redirect: 'follow' })
@@ -638,9 +629,6 @@ function chiamaBackend(azione, dati, callback) {
     .catch(function(err){ console.error('Errore:', err.message); callback(err, null); });
 }
 
-// ============================================================
-// LINGUA
-// ============================================================
 var LINGUA = 'it';
 function setLingua(l) {
   LINGUA = l;
@@ -656,26 +644,20 @@ function sh(id,v){ var e=document.getElementById(id); if(e&&v!==undefined) e.inn
 
 function applicaLingua() {
   var it = LINGUA==='it';
-  // Header
   var hSub = document.getElementById('headerSub');
   if (hSub) hSub.textContent = (it ? 'Stagione ' : 'Season ') + STAGIONE + (it ? ' \u2014 Iscrizioni e lezioni di prova' : ' \u2014 Enrollments and trial lessons');
-  // S0
   var s0T = document.querySelector('#s0 .step-title'); if (s0T) s0T.textContent = it ? 'Benvenuto/a! Come vuoi procedere?' : 'Welcome! How would you like to proceed?';
   var s0I = document.querySelector('#s0 .alert-info'); if (s0I) s0I.textContent = it ? "La pre-iscrizione genera un modulo precompilato via email. L\u2019iscrizione \u00e8 ufficiale solo dopo aver consegnato il modulo firmato e la copia di pagamento in palestra." : "The pre-enrollment generates a pre-filled form sent by email. Enrollment is official only after delivering the signed form and payment to the gym.";
-  // Pulsanti S0
   var btnP = document.getElementById('btnP'); if (btnP) btnP.innerHTML = '<span class="icon">\u2b50</span>'+(it?'Lezione di prova<br><small style="font-weight:400">2 lezioni gratuite</small>':'Trial lesson<br><small style="font-weight:400">2 free lessons</small>');
   var btnA = document.getElementById('btnA'); if (btnA) btnA.innerHTML = '<span class="icon">\ud83c\udd95</span>'+(it?'Nuova iscrizione<br><small style="font-weight:400">Prima volta</small>':'New enrollment<br><small style="font-weight:400">First time</small>');
   var btnB = document.getElementById('btnB'); if (btnB) btnB.innerHTML = '<span class="icon">\ud83d\udd04</span>'+(it?'Rinnovo<br><small style="font-weight:400">Gi\u00e0 iscritta</small>':'Renewal<br><small style="font-weight:400">Already enrolled</small>');
-  // S_TIPO
   var tTipo = document.querySelector('#s_tipo .step-title'); if (tTipo) tTipo.textContent = it ? 'Tipo di attivit\u00e0' : 'Type of activity';
   var btnR = document.getElementById('btnTipoRitmica'); if (btnR) btnR.innerHTML = '<span class="icon">\ud83e\udd38</span>'+(it?'Ginnastica ritmica<br><small style="font-weight:400">Baby, Base, Intermedio, Agonistica</small>':'Rhythmic gymnastics<br><small style="font-weight:400">Baby, Base, Intermediate, Competitive</small>');
-  var btnF = document.getElementById('btnTipoFitness'); if (btnF) btnF.innerHTML = '<span class="icon">\ud83e\uddd8</span>'+(it?'Fitness adulti<br><small style="font-weight:400">Fitness, Pilates, Risveglio Motorio</small>':'Adult fitness<br><small style="font-weight:400">Fitness, Pilates, Motor Awakening</small>');
-  // Pulsanti naviga generici
+  var btnF = document.getElementById('btnTipoFitness'); if (btnF) btnF.innerHTML = '<span class="icon">\ud83e\uddd8</span>'+(it?'Fitness adulti<br><small style="font-weight:400">Fitness, Pilates, Risveglio Motorio, Yoga Dinamico</small>':'Adult fitness<br><small style="font-weight:400">Fitness, Pilates, Motor Awakening, Dynamic Yoga</small>');
   document.querySelectorAll('.btn-back').forEach(function(b){ if (b.textContent.indexOf('\u2190')>=0 || b.textContent.indexOf('Back')>=0 || b.textContent.indexOf('Indietro')>=0) b.textContent = it ? '\u2190 Indietro' : '\u2190 Back'; });
   document.querySelectorAll('.btn-next').forEach(function(b){ if (b.id !== 'btnInvia' && b.id !== 'btnCerca') { if (b.textContent.indexOf('\u2192')>=0||b.textContent.indexOf('Avanti')>=0||b.textContent.indexOf('Next')>=0) b.textContent = it ? 'Avanti \u2192' : 'Next \u2192'; } });
   var btnInvia = document.getElementById('btnInvia'); if (btnInvia) btnInvia.textContent = it ? 'Invia' : 'Submit';
   var btnCerca = document.getElementById('btnCerca'); if (btnCerca && !btnCerca.disabled) btnCerca.textContent = it ? 'Cerca' : 'Search';
-  // Titoli step
   var titles = {
     'sB': it?'Cerca l\u2019atleta':'Find the athlete',
     's1p': it?'Dati dell\u2019atleta':'Athlete details',
@@ -693,14 +675,9 @@ function applicaLingua() {
   Object.keys(titles).forEach(function(id){
     var el = document.querySelector('#'+id+' .step-title'); if (el) el.textContent = titles[id];
   });
-  // Label ricerca CF
   var lblCF = document.querySelector('#sB .field-group label'); if (lblCF) lblCF.textContent = it ? 'Codice fiscale dell\u2019atleta *' : 'Athlete tax code *';
-  // Upload
-  var upTxt = document.getElementById('uploadTxt'); if (upTxt) upTxt.textContent = it ? 'Puoi caricarla ora oppure tornare tramite il link che riceverai nell\u2019email.' : 'You can upload it now or return via the link in the email.';
   var btnSf = document.getElementById('btnSfoglia'); if (btnSf) btnSf.textContent = it ? 'Sfoglia file' : 'Browse file';
   var btnCar = document.getElementById('btnCarica'); if (btnCar) btnCar.textContent = it ? 'Carica ricevuta' : 'Upload receipt';
-  // Footer
-  document.querySelectorAll('#footerContatto,#footerContatto2').forEach(function(el){ if(el) el.innerHTML = it ? 'Per informazioni: <strong>info@ginnika2001.com</strong> \u2014 WhatsApp <strong>+39 351 4136992</strong>' : 'For information: <strong>info@ginnika2001.com</strong> \u2014 WhatsApp <strong>+39 351 4136992</strong>'; });
 }
 
 function t(k) {
@@ -759,11 +736,7 @@ var LANG = {
   }
 };
 
-// ============================================================
-// CARICA DATI INIZIALI
-// ============================================================
 function caricaDatiIniziali() {
-  // Controlla se c'è un parametro cf nell'URL (upload diretto)
   var params = new URLSearchParams(window.location.search);
   var cf = params.get('cf') || '';
 
@@ -777,6 +750,9 @@ function caricaDatiIniziali() {
       CORSI_DATA   = data.corsi        || [];
       QUOTE_DATA   = data.quote        || {};
       PLANNING_DATA= data.planning     || {};
+
+      // Log per debug: mostra i corsi ricevuti e le loro categorie
+      console.log('Corsi ricevuti dal backend:', CORSI_DATA.map(function(c){ return c.nome + ' [' + c.categoria + ']'; }));
 
       document.getElementById('headerSub').textContent = t('headerSub').replace('2026/2027', STAGIONE);
       document.getElementById('quoteStagione').textContent = STAGIONE;
@@ -795,23 +771,17 @@ function caricaDatiIniziali() {
     });
 }
 
-// ============================================================
-// INIT
-// ============================================================
 function init() {
   caricaDatiIniziali();
 
-  // S0
   document.getElementById('btnP').onclick = function(){ FLUSSO='P'; vai('s_tipo'); };
   document.getElementById('btnA').onclick = function(){ FLUSSO='A'; vai('s_tipo'); };
   document.getElementById('btnB').onclick = function(){ FLUSSO='B'; vai('sB'); };
 
-  // SB
   document.getElementById('btnCerca').onclick = cercaCF;
   document.getElementById('cfLookup').onkeydown = function(e){ if(e.key==='Enter') cercaCF(); };
   document.getElementById('btnBackB').onclick = function(){ vai('s0'); nascondiProgress(); };
 
-  // S_TIPO
   document.getElementById('btnTipoRitmica').onclick = function(){
     TIPO_ATTIVITA='ritmica';
     if(FLUSSO==='P'){ vai('s1p'); progress(1); }
@@ -824,10 +794,8 @@ function init() {
   };
   document.getElementById('btnBackTipo').onclick = function(){ vai('s0'); nascondiProgress(); };
 
-  // S1P
   document.getElementById('btnBack1p').onclick = function(){ vai('s_tipo'); nascondiProgress(); };
 
-  // Mostra contatti se atleta P è maggiorenne
   document.getElementById('pCfAtleta').oninput = document.getElementById('pCfAtleta').onchange = function(){
     var cf=this.value.trim().toUpperCase(); this.value=cf;
     if(cf.length===16){
@@ -843,32 +811,23 @@ function init() {
     if(magP) campiP.push('pEmailMag','pTelefonoMag');
     if(ok(campiP)){
       if(TIPO_ATTIVITA==='fitness'){
-        // Fitness: maggiorenne salta s2p e s_fitness_contatti
         if(magP){ aggiornaSelectPerFitness(); vai('s3'); progress(3); }
         else { vai('s_fitness_contatti'); progress(2); }
       } else {
-        // Ritmica: maggiorenne salta s2p e va al questionario esperienza
         if(magP){ vai('s_sport'); progress(2); }
         else { vai('s2p'); progress(2); }
       }
     }
   };
 
-  // S2P
-  // Back da s2p — torna sempre a s1p
   document.getElementById('btnBack2p').onclick = function(){ vai('s1p'); progress(1); };
-
   document.getElementById('btnNext2p').onclick = function(){
     if(ok(['pNomeGenitore','pCognomeGenitore','pCfGenitore','pDataNascitaGenitore','pCittaNascitaGenitore','pEmail','pTelefono'])){
-      if(TIPO_ATTIVITA==='fitness'){
-        vai('s_fitness_contatti'); progress(3);
-      } else {
-        vai('s_sport'); progress(3);
-      }
+      if(TIPO_ATTIVITA==='fitness'){ vai('s_fitness_contatti'); progress(3); }
+      else { vai('s_sport'); progress(3); }
     }
   };
 
-  // S_FITNESS_CONTATTI
   document.getElementById('btnBackFitnessContatti').onclick = function(){
     if(TIPO_ATTIVITA==='fitness'){ vai('s1p'); progress(1); }
     else { vai('s2p'); progress(2); }
@@ -881,7 +840,6 @@ function init() {
     }
   };
 
-  // S_SPORT
   document.getElementById('haSportSi').onchange = function(){
     coloraRadioCustom('riSportSi','riSportNo'); mostra('bloccoTipoSport');
     document.querySelectorAll('input[name="tipoSport"]').forEach(function(r){ r.checked=false; });
@@ -917,7 +875,6 @@ function init() {
     vai('s_sede'); progress(3);
   };
 
-  // S_SEDE
   document.getElementById('sedePero').onchange = function(){ coloraRadioCustom('riSedePero','riSedeRho'); };
   document.getElementById('sedeRho').onchange  = function(){ coloraRadioCustom('riSedeRho','riSedePero'); };
   document.getElementById('btnBackSede').onclick = function(){ vai('s_sport'); progress(3); };
@@ -925,7 +882,6 @@ function init() {
     var sedeSel=document.querySelector('input[name="sedePref"]:checked');
     if(!sedeSel){ alert('Seleziona una sede.'); return; }
     SEDE_PREF=sedeSel.value;
-    // Assegna corso automatico — NON mostra S3
     if(SPORT_PREGRESSA==='ritmica_danza'&&ANNI_PRATICA==='piu2'){
       DA_VALUTARE_P=true; CORSO_P_AUTO=null;
     } else {
@@ -933,11 +889,9 @@ function init() {
       CORSO_P_AUTO=assegnaCorsoDaTabella(cfVal, SEDE_PREF, SPORT_PREGRESSA, ANNI_PRATICA);
       DA_VALUTARE_P=(CORSO_P_AUTO==='DA VALUTARE');
     }
-    // Vai direttamente ai consensi
     vai('s4'); progress(4);
   };
 
-  // S1
   document.getElementById('btnBack1').onclick = function(){
     if(FLUSSO==='B') vai('sB'); else vai('s_tipo'); nascondiProgress();
   };
@@ -945,11 +899,9 @@ function init() {
     var campiBase=['nomeAtleta','cognomeAtleta','cfAtleta','ciAtleta','dataNascitaAtleta','cittaNascitaAtleta','provNascitaAtleta','nazioneNascitaAtleta','cittaResidenzaAtleta','provResidenzaAtleta','capAtleta','viaAtleta','civicoAtleta'];
     var cf1=document.getElementById('cfAtleta').value.trim().toUpperCase();
     MAGGIORENNE=isMaggiorenne(cf1);
-    // Se maggiorenne valida anche email e cellulare in questa pagina
     if(MAGGIORENNE) campiBase.push('emailAtleta','telefonoAtleta');
     if(ok(campiBase)){
       document.getElementById('pd2l').textContent=MAGGIORENNE?'Corso':'Genitore/Tutore';
-      // Maggiorenne: salta S1mag e vai diretto a S3
       if(MAGGIORENNE){
         if(TIPO_ATTIVITA==='fitness'){ aggiornaSelectPerFitness(); }
         vai('s3'); progress(3);
@@ -968,7 +920,6 @@ function init() {
     if(cf.length===16){
       var eta=calcolaEtaDaCF(cf);
       (eta!==null&&eta>=13)?mostra('notaFirma'):nascondi('notaFirma');
-      // Mostra/nascondi contatti per maggiorenni direttamente in S1
       MAGGIORENNE=isMaggiorenne(cf);
       if(MAGGIORENNE){ mostra('contattiMaggiorenneS1'); } else { nascondi('contattiMaggiorenneS1'); }
       if(!validaCF(cf)){ this.classList.add('errore'); this.title='Codice fiscale non valido'; }
@@ -976,7 +927,6 @@ function init() {
     }
   };
 
-  // S1mag
   document.getElementById('btnBack1mag').onclick = function(){ vai('s1'); progress(1); };
   document.getElementById('btnNext1mag').onclick = function(){
     if(ok(['emailAtletaHidden','telefonoAtletaHidden'])){
@@ -986,7 +936,6 @@ function init() {
     }
   };
 
-  // S2
   document.getElementById('btnBack2').onclick = function(){ vai('s1'); progress(1); };
   document.getElementById('btnNext2').onclick = function(){
     if(ok(['nomeGenitore','cognomeGenitore','cfGenitore','ciGenitore','cittaNascitaGenitore','provNascitaGenitore','nazioneNascitaGenitore','dataNascitaGenitore','cittaResidenzaGenitore','provResidenzaGenitore','capGenitore','viaGenitore','civicoGenitore','emailGenitore_s2','telefonoGenitore_s2'])){
@@ -996,21 +945,18 @@ function init() {
     }
   };
 
-  // S3
   document.getElementById('corso').onchange = function(){ aggiornaAlertCert(); };
   document.getElementById('btnBack3').onclick = function(){
     if(FLUSSO==='P'){
       var cfP=document.getElementById('pCfAtleta').value.trim().toUpperCase();
       var magP=isMaggiorenne(cfP);
       if(TIPO_ATTIVITA==='fitness'){
-        // Fitness maggiorenne: torna a s1p (senza passare per s_fitness_contatti)
         if(magP){ vai('s1p'); progress(1); }
         else { vai('s_fitness_contatti'); progress(2); }
       } else {
-        // Ritmica: torna a s_sede (maggiorenne o minorenne uguale)
         vai('s_sede'); progress(3);
       }
-    } else if(MAGGIORENNE){ vai('s1'); progress(1); }  // maggiorenne: salta s1mag
+    } else if(MAGGIORENNE){ vai('s1'); progress(1); }
     else{ vai('s2'); progress(2); }
   };
   document.getElementById('btnNext3').onclick = function(){
@@ -1019,24 +965,15 @@ function init() {
     if(FLUSSO==='B'){
       mostra('s3bRinnovo'); nascondi('s3bNuova');
       var stato=ATLETA?ATLETA.statoCert:'assente', scad=ATLETA?ATLETA.scadenzaCert:'';
-
-      // Ricava tipo certificato dal corso selezionato
       var richiedeCert='agonistico';
       for(var ci=0;ci<CORSI_DATA.length;ci++){ if(CORSI_DATA[ci].nome===corsoSel){ richiedeCert=CORSI_DATA[ci].richiedeCert||'agonistico'; break; } }
       var it = LINGUA==='it';
-
-      // Istruzione rinnovo specifica per tipo
       var istruzioneRinnovo='';
       if(richiedeCert==='non_agonistico'){
-        istruzioneRinnovo = it
-          ? ' Puoi rinnovarlo rivolgendoti al tuo pediatra o medico di base.'
-          : ' You can renew it with your GP or family doctor.';
+        istruzioneRinnovo = it ? ' Puoi rinnovarlo rivolgendoti al tuo pediatra o medico di base.' : ' You can renew it with your GP or family doctor.';
       } else if(richiedeCert==='agonistico'){
-        istruzioneRinnovo = it
-          ? ' Contatta la segreteria per richiedere il modulo della visita medica sportiva agonistica.'
-          : ' Contact the secretariat to request the competitive sports medical examination form.';
+        istruzioneRinnovo = it ? ' Contatta la segreteria per richiedere il modulo della visita medica sportiva agonistica.' : ' Contact the secretariat to request the competitive sports medical examination form.';
       }
-
       var msg;
       if(stato==='scaduto'){
         msg='<div class="alert alert-danger">'+(it?'\u274c Il certificato medico \u00e8 scaduto il <strong>'+scad+'</strong>. Rinnovalo prima dell\u2019inizio delle lezioni.':'\u274c The medical certificate expired on <strong>'+scad+'</strong>. Please renew it before training sessions begin.')+istruzioneRinnovo+'</div>';
@@ -1053,7 +990,6 @@ function init() {
     mostra('s3bNuova'); nascondi('s3bRinnovo'); vai('s3b'); progress(3);
   };
 
-  // S3b
   document.getElementById('certSi').onchange = function(){ mostra('certScadenzaBox'); nascondi('certNoBox'); coloraRadio('si'); };
   document.getElementById('certNo').onchange = function(){ nascondi('certScadenzaBox'); mostra('certNoBox'); coloraRadio('no'); };
   document.getElementById('btnBack3b').onclick = function(){ vai('s3'); progress(3); };
@@ -1065,7 +1001,6 @@ function init() {
     vai('s4'); progress(4);
   };
 
-  // S4
   document.getElementById('btnBack4').onclick = function(){
     if(FLUSSO==='P'){
       if(TIPO_ATTIVITA==='fitness'){ vai('s3'); progress(3); }
@@ -1074,7 +1009,6 @@ function init() {
   };
   document.getElementById('btnInvia').onclick = inviaForm;
 
-  // Upload
   document.getElementById('btnSfoglia').onclick = function(){ document.getElementById('fileRicevuta').click(); };
   document.getElementById('fileRicevuta').onchange = function(){
     if(this.files[0]){
@@ -1098,11 +1032,6 @@ function init() {
   };
 }
 
-// ============================================================
-// ASSEGNAZIONE CORSO AUTOMATICA — Flusso P ritmica
-// ============================================================
-
-// Validazione CF lato client (stessa logica del server)
 function validaCF(cf) {
   if (!cf || cf.length !== 16) return false;
   cf = cf.toUpperCase();
@@ -1130,9 +1059,6 @@ function assegnaCorsoDaTabella(cfAtleta, sede, sportPregressa, anniPratica) {
   return 'DA VALUTARE';
 }
 
-// ============================================================
-// ETA' / CF
-// ============================================================
 function calcolaEtaDaCF(cf) {
   if(!cf||cf.length<11) return null;
   cf=cf.toUpperCase();
@@ -1175,12 +1101,23 @@ function aggiornaSelectPerFitness() {
   var sel=document.getElementById('corso');
   sel.innerHTML='';
   var opt0=document.createElement('option'); opt0.value=''; opt0.textContent='-- Seleziona corso --'; sel.appendChild(opt0);
-  CORSI_DATA.forEach(function(c){
-    if(c.categoria!=='Adulti') return;
-    var opt=document.createElement('option'); opt.value=c.nome; opt.textContent=c.nome; sel.appendChild(opt);
-  });
+
+  // Prima prova a filtrare dal backend
+  var corsiFitness = CORSI_DATA.filter(function(c){ return c.categoria==='Adulti'; });
+
+  // Fallback: se il backend non restituisce nessun corso Adulti, usa la lista hardcoded
+  if(corsiFitness.length === 0) {
+    console.warn('Nessun corso Adulti dal backend — uso fallback hardcoded');
+    CORSI_FITNESS_FALLBACK.forEach(function(nome){
+      var opt=document.createElement('option'); opt.value=nome; opt.textContent=nome; sel.appendChild(opt);
+    });
+  } else {
+    corsiFitness.forEach(function(c){
+      var opt=document.createElement('option'); opt.value=c.nome; opt.textContent=c.nome; sel.appendChild(opt);
+    });
+  }
+
   aggiornaAlertCert();
-  // Mostra solo planning adulti
   popolaPlanningFitness();
 }
 
@@ -1197,7 +1134,6 @@ function aggiornaAlertCert() {
 
 function popolaPlanning() {
   if(!PLANNING_DATA||!Object.keys(PLANNING_DATA).length) return;
-  var GIORNI_FULL=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
   var corsePero=[],corsiRho=[];
   CORSI_DATA.forEach(function(c){
     if(!PLANNING_DATA[c.nome]||c.categoria==='Adulti') return;
@@ -1209,7 +1145,6 @@ function popolaPlanning() {
 }
 
 function popolaPlanningFitness() {
-  // Resetta e mostra solo corsi adulti
   document.getElementById('tbodyPero').innerHTML='';
   document.getElementById('tbodyRho').innerHTML='';
   document.getElementById('planningPero').classList.add('hidden');
@@ -1218,6 +1153,12 @@ function popolaPlanningFitness() {
   CORSI_DATA.forEach(function(c){
     if(c.categoria==='Adulti'&&PLANNING_DATA[c.nome]) corsiAdulti.push(c.nome);
   });
+  // Fallback planning per corsi hardcoded
+  if(corsiAdulti.length===0){
+    CORSI_FITNESS_FALLBACK.forEach(function(nome){
+      if(PLANNING_DATA[nome]) corsiAdulti.push(nome);
+    });
+  }
   if(corsiAdulti.length){
     renderTabella(corsiAdulti,'tbodyPero','planningPero');
     document.getElementById('planningBox').classList.remove('hidden');
@@ -1249,9 +1190,6 @@ function popolaBonifico() {
   if(elIban&&IBAN){ var raw=IBAN.replace(/\s/g,''); elIban.textContent=raw.match(/.{1,4}/g).join(' '); }
 }
 
-// ============================================================
-// PROGRESS / NAVIGAZIONE
-// ============================================================
 function vai(step){
   STEPS.forEach(function(s){ var e=document.getElementById(s); if(e) e.classList.add('hidden'); });
   var el=document.getElementById(step); if(el) el.classList.remove('hidden');
@@ -1279,9 +1217,6 @@ function g(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
 function sv(id,v){ var e=document.getElementById(id); if(e&&v!=null) e.value=v; }
 function dt(id){ var e=document.getElementById(id); if(!e||!e.value) return ''; var p=e.value.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
 
-// ============================================================
-// LOOKUP CF (flusso B)
-// ============================================================
 function cercaCF(){
   var cf=g('cfLookup').toUpperCase();
   if(cf.length!==16){ document.getElementById('lookupResult').innerHTML='<div class="alert alert-warn">Il codice fiscale deve essere di 16 caratteri.</div>'; return; }
@@ -1299,7 +1234,6 @@ function cercaCF(){
       return;
     }
     ATLETA=r;
-    // Stato certificato mostrato solo in S3b dopo la scelta del corso
     document.getElementById('lookupResult').innerHTML=
       '<div class="atleta-card"><div class="nome">'+r.nomeAtleta+' '+r.cognomeAtleta+'</div>'+
       '<div class="det">Corso attuale: <strong>'+(r.corsoAttuale||'—')+'</strong></div></div>'+
@@ -1323,13 +1257,10 @@ function precompila(){
   sv('viaGenitore',r.viaGenitore||''); sv('civicoGenitore',r.civicoGenitore||''); sv('capGenitore',r.capGenitore||'');
   sv('cittaResidenzaGenitore',r.cittaResidenzaGenitore||''); sv('provResidenzaGenitore',r.provResidenzaGenitore||'');
   sv('emailGenitore_s2',r.emailGenitore||''); sv('telefonoGenitore_s2',r.telefonoGenitore||'');
-  // Rinnovo maggiorenne: precompila anche i campi in S1
   sv('emailAtletaS1',r.emailGenitore||''); sv('telefonoAtletaS1',r.telefonoGenitore||'');
-  // Mostra/nascondi sezione contatti in base all'età
   var cfR=r.cfAtleta||'';
   if(isMaggiorenne(cfR)){ MAGGIORENNE=true; mostra('contattiMaggiorenneS1'); }
   else { MAGGIORENNE=false; nascondi('contattiMaggiorenneS1'); }
-  // Preseleziona corso consigliato
   if(r.corsoConsigliato){
     var sel=document.getElementById('corso');
     for(var i=0;i<sel.options.length;i++){
@@ -1345,9 +1276,6 @@ function precompila(){
   mostra('corsoAttualeInfo');
 }
 
-// ============================================================
-// VALIDAZIONE
-// ============================================================
 function ok(campi){
   var pass=true;
   campi.forEach(function(c){ var el=document.getElementById(c); if(!el) return; if(!el.value.trim()){ el.classList.add('errore'); pass=false; } else el.classList.remove('errore'); });
@@ -1355,9 +1283,6 @@ function ok(campi){
   return pass;
 }
 
-// ============================================================
-// INVIO
-// ============================================================
 function inviaForm(){
   if(!document.getElementById('consensoPrivacy').checked){ alert('La dichiarazione su Privacy e Statuto è richiesta per procedere.'); return; }
   var r1=document.querySelector('input[name="consensoFoto1"]:checked');
@@ -1383,7 +1308,6 @@ function raccogliDati(){
     cfAtleta:g('pCfAtleta').toUpperCase(), dataNascitaAtleta:dt('pDataNascitaAtleta'),
     cittaNascitaAtleta:g('pCittaNascitaAtleta'), provNascitaAtleta:g('pProvNascitaAtleta'),
     nazioneNascitaAtleta:g('pNazioneNascitaAtleta')||'Italia',
-    // P maggiorenne: genitore = atleta stessa
     nomeGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pNomeAtleta'):g('pNomeGenitore'),
     cognomeGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pCognomeAtleta'):g('pCognomeGenitore'),
     cfGenitore:(TIPO_ATTIVITA==='fitness'||isMaggiorenne(g('pCfAtleta').toUpperCase()))?g('pCfAtleta').toUpperCase():g('pCfGenitore').toUpperCase(),
@@ -1402,10 +1326,9 @@ function raccogliDati(){
     consensoMarketing:(document.querySelector('input[name="consensoMarketing"]:checked')||{}).value||'No',
   };
 
-  // Ricalcola MAGGIORENNE dal CF per sicurezza (onchange potrebbe non scattare se CF incollato)
   var _cfCheck = g('cfAtleta').toUpperCase();
   var _mag = isMaggiorenne(_cfCheck);
-  MAGGIORENNE = _mag; // aggiorna anche la variabile globale
+  MAGGIORENNE = _mag;
 
   var nomeGen=_mag?g('nomeAtleta'):g('nomeGenitore');
   var cognGen=_mag?g('cognomeAtleta'):g('cognomeGenitore');
@@ -1444,9 +1367,6 @@ function raccogliDati(){
   };
 }
 
-// ============================================================
-// CONFERMA
-// ============================================================
 function mostraConfermaIscrizione(){
   vai('sConferma'); nascondiProgress();
   mostra('quoteSection'); mostra('bonificoSection'); mostra('uploadSection');
@@ -1491,9 +1411,6 @@ function mostraConfermaProva(){
   document.getElementById('msgConferma').innerHTML=msg;
 }
 
-// ============================================================
-// UPLOAD RICEVUTA
-// ============================================================
 function caricaRicevuta(){
   var file=document.getElementById('fileRicevuta').files[0];
   if(!file){ alert('Seleziona un file.'); return; }
@@ -1516,9 +1433,6 @@ function caricaRicevuta(){
   reader.readAsDataURL(file);
 }
 
-// ============================================================
-// UPLOAD DIRETTO DA LINK EMAIL
-// ============================================================
 function modalitaUploadDiretto(cf){
   STEPS.forEach(function(s){ var e=document.getElementById(s); if(e) e.classList.add('hidden'); });
   nascondiProgress();
@@ -1564,9 +1478,6 @@ function modalitaUploadDiretto(cf){
   });
 }
 
-// ============================================================
-// COPIA TESTO
-// ============================================================
 function copia(elId,btn){
   var txt=document.getElementById(elId).textContent.trim();
   if(elId==='valIban') txt=txt.replace(/\s/g,'');
@@ -1576,7 +1487,6 @@ function copia(elId,btn){
 }
 function fb(txt,cb){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb(); }
 
-// Avvio
 if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
 </script>
 </body>
